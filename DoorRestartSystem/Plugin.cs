@@ -21,9 +21,8 @@ namespace DoorRestartSystem
         public float InitialDelay;
         public float DurationMin;
         public float DurationMax;
-        public int DelayMax;
-        public int DelayMin;
-        public int randomDelay;
+        public static int DelayMax;
+        public static int DelayMin;
 
 
         public override void OnEnable()
@@ -54,8 +53,7 @@ namespace DoorRestartSystem
             DurationMax = Config.GetFloat("drs_dur_max", 10);
             DelayMin = Config.GetInt("drs_delay_min", 180);
             DelayMax = Config.GetInt("drs_delay_max", 300);
-            Random randomDelay = new Random(); 
-            randomDelay.Next(DelayMin, DelayMax);
+           
         }
         public override void OnDisable()
         {
@@ -78,11 +76,21 @@ namespace DoorRestartSystem
             get;
         } = "DoorRestartSystem";
 
-       
-        
-            
+        Random rand = new Random();
 
        
+
+        public static int getRandom()
+        {
+            Random rand = new Random();
+            return rand.Next(DelayMin, DelayMax);
+        }
+
+        public static int randomValue = getRandom();
+
+
+
+
 
 
         public IEnumerator<float> RunBlackoutTimer()
@@ -114,15 +122,14 @@ namespace DoorRestartSystem
                 }
 
                 yield
-                return Timing.WaitForSeconds(blackoutDur - 8.7f);
+                return Timing.WaitForSeconds(blackoutDur);
                 foreach (Door door in UnityEngine.Object.FindObjectsOfType<Door>())
                 {
-                    door.SetStateWithSound(true);
                     door.Networklocked = false;
                 }
                 Respawn.RpcPlayCustomAnnouncement("DOOR SOFTWARE REPAIR COMPLETE", false, true);
                 yield
-                return Timing.WaitForSeconds(randomDelay);
+                return Timing.WaitForSeconds(randomValue);
                 TimerOn = false;
 
             }

@@ -96,6 +96,10 @@ namespace DoorRestartSystem
 
             for (; ; )
             {
+                if (Map.IsNukeDetonated || Map.IsNukeInProgress)
+                {
+                    yield return 0;
+                }
                 Respawn.RpcPlayCustomAnnouncement("WARNING . DOOR SOFTWARE REPAIR IN t minus 20 seconds .", false, true);
 
 

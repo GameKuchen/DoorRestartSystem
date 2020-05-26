@@ -23,6 +23,7 @@ namespace DoorRestartSystem
         public float DurationMax;
         public int DelayMax;
         public int DelayMin;
+        public int randomDelay;
 
 
         public override void OnEnable()
@@ -53,6 +54,8 @@ namespace DoorRestartSystem
             DurationMax = Config.GetFloat("drs_dur_max", 10);
             DelayMin = Config.GetInt("drs_delay_min", 180);
             DelayMax = Config.GetInt("drs_delay_max", 300);
+            Random randomDelay = new Random(); 
+            randomDelay.Next(DelayMin, DelayMax);
         }
         public override void OnDisable()
         {
@@ -75,7 +78,12 @@ namespace DoorRestartSystem
             get;
         } = "DoorRestartSystem";
 
+       
         
+            
+
+       
+
 
         public IEnumerator<float> RunBlackoutTimer()
         {
@@ -91,9 +99,9 @@ namespace DoorRestartSystem
 
                 TimerOn = true;
                 yield
-                return Timing.WaitForSeconds(8.7f);
+                return Timing.WaitForSeconds(23f);
                 float blackoutDur = DurationMax;
-
+                
 
 
 
@@ -101,13 +109,9 @@ namespace DoorRestartSystem
                 {
 
 
-                    door.SetStateWithSound(true);
-                    door.NetworkisOpen = false;
+                    door.SetStateWithSound(false);
                     door.Networklocked = true;
                 }
-
-
-
 
                 yield
                 return Timing.WaitForSeconds(blackoutDur - 8.7f);
@@ -118,7 +122,7 @@ namespace DoorRestartSystem
                 }
                 Respawn.RpcPlayCustomAnnouncement("DOOR SOFTWARE REPAIR COMPLETE", false, true);
                 yield
-                return Timing.WaitForSeconds(8.7f);
+                return Timing.WaitForSeconds(randomDelay);
                 TimerOn = false;
 
             }

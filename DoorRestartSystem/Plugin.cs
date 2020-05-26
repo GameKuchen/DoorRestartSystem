@@ -29,9 +29,9 @@ namespace DoorRestartSystem
         {
             try
             {
-                Info("loaded.");
+                Log.Info("loaded.");
                 ReloadConfig();
-                Info("Configs loaded.");
+                Log.Info("Configs loaded.");
                 EventHandlers = new EventHandlers(this);
 
                 Events.RoundStartEvent += EventHandlers.OnRoundStart;
@@ -41,13 +41,13 @@ namespace DoorRestartSystem
             }
             catch (Exception e)
             {
-                Log.Error($ "OnEnable Error: {e}");
+                Log.Error($"OnEnable Error: {e}");
             }
         }
 
         public void ReloadConfig()
         {
-            Log.Info($ "Config Path: {Config.Path}");
+            Log.Info($"Config Path: {Config.Path}");
             InitialDelay = Config.GetFloat("drs_initial_delay", 120f);
             DurationMin = Config.GetFloat("drs_dur_min", 5f);
             DurationMax = Config.GetFloat("drs_dur_max", 10);
@@ -75,7 +75,7 @@ namespace DoorRestartSystem
             get;
         } = "DoorRestartSystem";
 
-
+        
 
         public IEnumerator<float> RunBlackoutTimer()
         {

@@ -23,6 +23,7 @@ namespace DoorRestartSystem
         {
             foreach (CoroutineHandle handle in Coroutines)
                 Timing.KillCoroutines(handle);
+            Coroutines.Add(Timing.RunCoroutine(plugin.RunBlackoutTimer()));
             TeslasDisabled = false;
         }
 

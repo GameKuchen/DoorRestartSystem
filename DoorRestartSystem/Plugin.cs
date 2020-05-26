@@ -109,6 +109,8 @@ namespace DoorRestartSystem
                 yield
                 return Timing.WaitForSeconds(17f);
                 Respawn.RpcPlayCustomAnnouncement("3 . 2 . 1", false, false);
+                yield
+                return Timing.WaitForSeconds(3f);
                 float blackoutDur = DurationMax;
                 
 

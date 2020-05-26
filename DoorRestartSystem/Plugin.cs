@@ -76,17 +76,11 @@ namespace DoorRestartSystem
             get;
         } = "DoorRestartSystem";
 
-        Random rand = new Random();
+        
 
        
 
-        public static int getRandom()
-        {
-            Random rand = new Random();
-            return rand.Next(DelayMin, DelayMax);
-        }
-
-        public static int randomValue = getRandom();
+        
 
 
 
@@ -131,8 +125,7 @@ namespace DoorRestartSystem
                     door.Networklocked = false;
                 }
                 Respawn.RpcPlayCustomAnnouncement("DOOR SOFTWARE REPAIR COMPLETE", false, true);
-                yield
-                return Timing.WaitForSeconds(randomValue);
+                yield return MEC.Timing.WaitForSeconds(UnityEngine.Random.Range(DelayMin, DelayMax));
                 TimerOn = false;
 
             }

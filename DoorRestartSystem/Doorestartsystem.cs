@@ -76,10 +76,10 @@ namespace DoorRestartSystem
             Log.Info("Reached BlackoutTimer");
             if (Respawn == null)
                 Respawn = PlayerManager.localPlayer.GetComponent<NineTailedFoxAnnouncer>();
-            yield
-                return Timing.WaitForSeconds((float) random.NextDouble() * (Config.DurationMax - Config.DurationMin) + Config.DurationMin);
+            yield return Timing.WaitForSeconds(Config.InitialDelay);
+            yield return Timing.WaitForSeconds((float)random.NextDouble() * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);
 
-            for(; ; )
+            for (; ; )
             {
                 if(Warhead.IsDetonated || Warhead.IsInProgress)
                 {
@@ -89,10 +89,15 @@ namespace DoorRestartSystem
 
                 TimerOn = true;
                 yield
+
                 return Timing.WaitForSeconds(Config.timebtweensntnstart);
-                Cassie.Message("3 . 2 . 1", false, true);
-                yield
-                return Timing.WaitForSeconds(3f);
+                if (Config.countdown)
+                {
+                    Cassie.Message("3 . 2 . 1", false, true);
+                    yield
+                    return Timing.WaitForSeconds(3f);
+                }  
+
                 float BlackoutDur = (float)(random.NextDouble() * (Config.DurationMax - Config.DurationMin) + Config.DurationMin);
 
 

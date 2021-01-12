@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DoorRestartSystem.Handlers;
@@ -54,6 +54,14 @@ namespace DoorRestartSystem
             base.OnDisabled();
             foreach (CoroutineHandle handle in server.Coroutines)
                 Timing.KillCoroutines(handle);
+
+            Exiled.Events.Handlers.Server.RoundStarted -= server.OnRoundStarted;
+            Exiled.Events.Handlers.Server.RoundEnded -= server.OnRoundEnd;
+            Exiled.Events.Handlers.Server.WaitingForPlayers -= server.OnWaitingForPlayers;
+            Exiled.Events.Handlers.Player.TriggeringTesla -= player.OnTriggerTesla;
+
+            server = null;
+            player = null;
         }
 
 

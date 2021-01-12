@@ -1,17 +1,8 @@
-## Door-Restart-System v1.0
+## Door-Restart-System V2.0
 
 ## Info
 The Plugin will Close and Lock all Doors for about 10 Seconds.
-## Configs
+ 
+I litterally changed everything for the release of Exiled 2.0 because it was requested.
 
-## drs_initial_delay 
-Default Value: 120
-The Delay before the First restart CAN happen.
-
-## drs_delay_min
-Default Value: 300
-The minimum delay before the next restart can happen.
-
-## drs_delay_max
-Default Value: 500
-The maximum delay before the next restart can happen.
+If you find any problems please open a Issue.

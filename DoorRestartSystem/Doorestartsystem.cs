@@ -14,6 +14,11 @@ namespace DoorRestartSystem
     {
         private static readonly Lazy<Doorestartsystem> LazyInstance = new Lazy<Doorestartsystem>(() => new Doorestartsystem());
         public Doorestartsystem Instance => LazyInstance.Value;
+        public override string Author { get; } = "GameKuchen";
+        public override string Name { get; } = "DoorRestartSystem";
+        public override string Prefix { get; } = "DRS";
+        public override Version Version { get; } = new Version(2, 5, 0);
+
         public Random Gen = new Random();
         private Handlers.Server server;
         private Handlers.Player player;
@@ -75,7 +80,6 @@ namespace DoorRestartSystem
 
         public IEnumerator<float> RunBlackoutTimer()
         {
-            Log.Info("Reached BlackoutTimer");
             if (Respawn == null)
                 Respawn = PlayerManager.localPlayer.GetComponent<NineTailedFoxAnnouncer>();
             yield return Timing.WaitForSeconds(Config.InitialDelay);
@@ -119,11 +123,7 @@ namespace DoorRestartSystem
                 TimerOn = false;
             }
         }
-    }
-
-
-
-        
+    }   
         
 
 }

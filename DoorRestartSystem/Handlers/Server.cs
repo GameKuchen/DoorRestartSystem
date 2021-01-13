@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Exiled;
+using System.Collections.Generic;
 using Exiled.API.Features;
-using Exiled.Events;
 using Exiled.Events.EventArgs;
 using MEC;
 

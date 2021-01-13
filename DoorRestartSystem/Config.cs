@@ -27,10 +27,10 @@ namespace DoorRestartSystem
         public string DoorSentence { get; set; } = "pitch_0.2 .g4 . .g4 pitch_1 door control system pitch_0.25 .g1 pitch_0.9 malfunction pitch_1 . initializing repair";
 
         [Description("Enable 3 . 2 . 1 announcement")]
-        public bool countdown { get; set; } = true;
+        public bool countdown { get; set; } = false;
 
         [Description("The time between the sentence and the 3 . 2 . 1 announcement")]
-        public float timebtweensntnstart { get; set; } = 17f;
+        public float timebtweensntnstart { get; set; } = 12f;
 
         [Description("DoorAfterRestartSencent")]
         public string DoorAfterSentence { get; set; } = "DOOR CONTROL SYSTEM REPAIR COMPLETE";

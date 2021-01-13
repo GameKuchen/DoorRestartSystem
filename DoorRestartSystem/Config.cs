@@ -23,6 +23,9 @@ namespace DoorRestartSystem
         [Description("The The Maxiumum Delay before the next the Lockdown")]
         public float DelayMax { get; set; } = 500f;
 
+        [Description("The chance that a Round even has Doorsystemrestarts")]
+        public float spawnchance { get; set; } = 45;
+
         [Description("The sentence it trasnmits via Cassie before the System gets restarted")]
         public string DoorSentence { get; set; } = "pitch_0.2 .g4 . .g4 pitch_1 door control system pitch_0.25 .g1 pitch_0.9 malfunction pitch_1 . initializing repair";
 

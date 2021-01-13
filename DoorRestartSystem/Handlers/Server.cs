@@ -18,10 +18,12 @@ namespace DoorRestartSystem.Handlers
             Log.Info("Reached OnROundstarted");
             foreach (CoroutineHandle handle in Coroutines)
                 Timing.KillCoroutines(handle);
-            if (plugin.Gen.Next(100) > plugin.Config.spawnchance)
-                {
-                Coroutines.Add(Timing.RunCoroutine(plugin.RunBlackoutTimer()));
-                }
+
+            int y = plugin.Gen.Next(100);
+            if (y < plugin.Config.spawnchance)
+            {            
+            Coroutines.Add(Timing.RunCoroutine(plugin.RunBlackoutTimer()));
+            } 
         }
         public void OnRoundEnd(RoundEndedEventArgs ev)
         {

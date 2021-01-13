@@ -106,13 +106,13 @@ namespace DoorRestartSystem
                 foreach (DoorVariant door in Map.Doors)
                 {
                     door.NetworkTargetState = false;
-                    door.NetworkActiveLocks = 1;
+                    door.ServerChangeLock(DoorLockReason.AdminCommand, true);
                 }
                 yield
                 return Timing.WaitForSeconds(BlackoutDur);
                 foreach (DoorVariant door in Map.Doors)
                 {
-                    door.NetworkActiveLocks = 0;
+                    door.ServerChangeLock(DoorLockReason.AdminCommand, false);
                 }
                 Cassie.Message(Config.DoorAfterSentence, false, true);
                 yield return Timing.WaitForSeconds((float)random.NextDouble() * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);

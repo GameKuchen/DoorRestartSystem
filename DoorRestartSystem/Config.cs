@@ -5,7 +5,7 @@ namespace DoorRestartSystem
 {
     public sealed class Config : IConfig
     {
-        [Description("Enable or disable CustomDoorAccess.")]
+        [Description("Enable or disable DoorRestartSystem.")]
         public bool IsEnabled { get; set; } = true;
 
         [Description("The InitialDelay before the first doorrestart can happen")]

@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using DoorRestartSystem.Handlers;
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Interactables.Interobjects.DoorUtils;
@@ -34,8 +32,12 @@ namespace DoorRestartSystem
         public override void OnEnabled()
         {
             base.OnEnabled();
+            if (Config.IsEnabled) 
+            { 
+            
             Log.Info("Reached OnEnabled");
             registerEvents();
+            }
 
         }
 

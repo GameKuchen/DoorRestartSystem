@@ -41,7 +41,6 @@ namespace DoorRestartSystem
 
         public static void softlockDoors()
         {
-            Log.Info("softlock");
             foreach (DoorVariant door in Map.Doors)
             {
                 door.ServerChangeLock(DoorLockReason.Warhead, true);

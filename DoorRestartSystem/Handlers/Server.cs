@@ -13,7 +13,6 @@ namespace DoorRestartSystem.Handlers
 
         public void OnRoundStarted()
         {
-            Log.Info("Reached OnROundstarted");
             foreach (CoroutineHandle handle in Coroutines)
                 Timing.KillCoroutines(handle);
 

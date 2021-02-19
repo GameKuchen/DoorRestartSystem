@@ -11,10 +11,11 @@ namespace DoorRestartSystem
 
     public class DoorRestartsystem : Plugin<Config>
     {
-        public override string Author { get; } = "GameKuchen";
-        public override string Name { get; } = "DoorRestartSystem";
-        public override string Prefix { get; } = "DRS";
-        public override Version Version { get; } = new Version(2, 5, 0);
+        public override string Author => "GameKuchen";
+        public override string Name => "DoorRestartSystem";
+        public override string Prefix => "DRS";
+        public override Version Version => new Version(2, 5, 0);
+        public override Version RequiredExiledVersion => new Version(2, 1, 30);
         public Random Gen = new Random();
         public static DoorRestartsystem Singleton;
         private Handlers.Server server;
@@ -22,7 +23,7 @@ namespace DoorRestartSystem
         public NineTailedFoxAnnouncer Respawn;
         public static bool TimerOn = true;
         System.Random random = new System.Random();
-        public override PluginPriority Priority { get; } = PluginPriority.Medium;
+        public override PluginPriority Priority => PluginPriority.Medium;
 
         public override void OnEnabled()
         {

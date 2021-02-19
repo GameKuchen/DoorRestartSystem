@@ -24,21 +24,18 @@ namespace DoorRestartSystem
         public float DelayMax { get; set; } = 500f;
 
         [Description("The chance that a Round even has Doorsystemrestarts")]
-        public float spawnchance { get; set; } = 45;
+        public float Spawnchance { get; set; } = 45;
 
         [Description("The sentence it trasnmits via Cassie before the System gets restarted")]
         public string DoorSentence { get; set; } = "pitch_0.2 .g4 . .g4 pitch_1 door control system pitch_0.25 .g1 pitch_0.9 malfunction pitch_1 . initializing repair";
 
         [Description("Enable 3 . 2 . 1 announcement")]
-        public bool countdown { get; set; } = false;
+        public bool Countdown { get; set; } = false;
 
         [Description("The time between the sentence and the 3 . 2 . 1 announcement")]
-        public float timebtweensntnstart { get; set; } = 12f;
+        public float TimeBetweenSentenceAndStart { get; set; } = 12f;
 
-        [Description("DoorAfterRestartSencent")]
+        [Description("DoorAfterRestartSentence")]
         public string DoorAfterSentence { get; set; } = "DOOR CONTROL SYSTEM REPAIR COMPLETE";
-
-       
-
     }
 }

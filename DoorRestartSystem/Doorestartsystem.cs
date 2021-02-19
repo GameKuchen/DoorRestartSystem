@@ -49,7 +49,6 @@ namespace DoorRestartSystem
 
         private void registerEvents()
         {
-            Log.Info("RegisterEvents");
             server = new Handlers.Server(this);
             player = new Handlers.Player(this);
             Exiled.Events.Handlers.Server.RoundStarted += server.OnRoundStarted;
@@ -71,7 +70,6 @@ namespace DoorRestartSystem
 
         public IEnumerator<float> RunBlackoutTimer()
         {
-            Log.Info("Runblackouttimer");
             yield return Timing.WaitForSeconds(Config.InitialDelay);
             yield return Timing.WaitForSeconds((float)random.NextDouble() * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);
 
@@ -95,7 +93,6 @@ namespace DoorRestartSystem
                 {
                    if(door.Type() != DoorType.NukeSurface)
                     {
-                        Log.Info("locking the doors");
                         door.NetworkTargetState = false;
                         door.ServerChangeLock(DoorLockReason.SpecialDoorFeature, true);
                     }

@@ -2,52 +2,55 @@ using System;
 using System.Collections.Generic;
 using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.API.Extensions;
 using Interactables.Interobjects.DoorUtils;
 using MEC;
-
-
 
 namespace DoorRestartSystem
 {
 
-    public class Doorestartsystem : Plugin<Config>
+    public class DoorRestartsystem : Plugin<Config>
     {
-        private static readonly Lazy<Doorestartsystem> LazyInstance = new Lazy<Doorestartsystem>(() => new Doorestartsystem());
-        public Doorestartsystem Instance => LazyInstance.Value;
         public override string Author { get; } = "GameKuchen";
         public override string Name { get; } = "DoorRestartSystem";
         public override string Prefix { get; } = "DRS";
         public override Version Version { get; } = new Version(2, 5, 0);
-
         public Random Gen = new Random();
+        public static DoorRestartsystem Singleton;
         private Handlers.Server server;
         private Handlers.Player player;
-
         public NineTailedFoxAnnouncer Respawn;
-
         public static bool TimerOn = true;
-        
-        public float DurationMin;
-        public float DurationMax;
-        public static int DelayMax;
         System.Random random = new System.Random();
-        public static int DelayMin;
-
         public override PluginPriority Priority { get; } = PluginPriority.Medium;
+
         public override void OnEnabled()
         {
             base.OnEnabled();
-            if (Config.IsEnabled) 
-            { 
-            
-            Log.Info("Reached OnEnabled");
+            Singleton = this;
             registerEvents();
-            }
+        }
 
+        public override void OnDisabled()
+        {
+            base.OnDisabled();
+            foreach (CoroutineHandle handle in server.Coroutines)
+                Timing.KillCoroutines(handle);
+            unRegisterEvents();
+        }
+
+        public static void softlockDoors()
+        {
+            Log.Info("softlock");
+            foreach (DoorVariant door in Map.Doors)
+            {
+                door.ServerChangeLock(DoorLockReason.Warhead, true);
+            }
         }
 
         private void registerEvents()
         {
+            Log.Info("RegisterEvents");
             server = new Handlers.Server(this);
             player = new Handlers.Player(this);
             Exiled.Events.Handlers.Server.RoundStarted += server.OnRoundStarted;
@@ -56,12 +59,8 @@ namespace DoorRestartSystem
             Exiled.Events.Handlers.Player.TriggeringTesla += player.OnTriggerTesla;
         }
 
-        public override void OnDisabled()
+        private void unRegisterEvents()
         {
-            base.OnDisabled();
-            foreach (CoroutineHandle handle in server.Coroutines)
-                Timing.KillCoroutines(handle);
-
             Exiled.Events.Handlers.Server.RoundStarted -= server.OnRoundStarted;
             Exiled.Events.Handlers.Server.RoundEnded -= server.OnRoundEnd;
             Exiled.Events.Handlers.Server.WaitingForPlayers -= server.OnWaitingForPlayers;
@@ -71,49 +70,38 @@ namespace DoorRestartSystem
             player = null;
         }
 
-
-
-       
-        public Doorestartsystem()
-        {
-        }
-
         public IEnumerator<float> RunBlackoutTimer()
         {
-            if (Respawn == null)
-                Respawn = PlayerManager.localPlayer.GetComponent<NineTailedFoxAnnouncer>();
+            Log.Info("Runblackouttimer");
             yield return Timing.WaitForSeconds(Config.InitialDelay);
             yield return Timing.WaitForSeconds((float)random.NextDouble() * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);
 
             for (; ; )
             {
-                if(Warhead.IsDetonated || Warhead.IsInProgress)
-                {
-                    yield return 0;
-                }
+                yield return Timing.WaitUntilTrue(() => Warhead.IsDetonated || Warhead.IsInProgress);
                 Cassie.Message(Config.DoorSentence, false, true);
 
                 TimerOn = true;
-                yield
-
-                return Timing.WaitForSeconds(Config.timebtweensntnstart);
-                if (Config.countdown)
+                yield return Timing.WaitForSeconds(Config.TimeBetweenSentenceAndStart);
+                if (Config.Countdown)
                 {
                     Cassie.Message("3 . 2 . 1", false, true);
-                    yield
-                    return Timing.WaitForSeconds(3f);
-                }  
+                    yield return Timing.WaitForSeconds(3f);
+                }
 
                 float BlackoutDur = (float)(random.NextDouble() * (Config.DurationMax - Config.DurationMin) + Config.DurationMin);
 
 
                 foreach (DoorVariant door in Map.Doors)
                 {
-                    door.NetworkTargetState = false;
-                    door.ServerChangeLock(DoorLockReason.AdminCommand, true);
+                   if(door.Type() != DoorType.NukeSurface)
+                    {
+                        Log.Info("locking the doors");
+                        door.NetworkTargetState = false;
+                        door.ServerChangeLock(DoorLockReason.SpecialDoorFeature, true);
+                    }
                 }
-                yield
-                return Timing.WaitForSeconds(BlackoutDur);
+                yield return Timing.WaitForSeconds(BlackoutDur);
                 foreach (DoorVariant door in Map.Doors)
                 {
                     door.ServerChangeLock(DoorLockReason.AdminCommand, false);
@@ -123,7 +111,5 @@ namespace DoorRestartSystem
                 TimerOn = false;
             }
         }
-    }   
-        
-
+    }
 }

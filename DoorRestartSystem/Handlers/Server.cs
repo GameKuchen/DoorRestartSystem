@@ -7,8 +7,8 @@ namespace DoorRestartSystem.Handlers
 {
     internal sealed class Server
     {
-        private readonly DoorRestartsystem plugin;
-        public Server(DoorRestartsystem plugin) => this.plugin = plugin;
+        private readonly DoorRestartSystem plugin;
+        public Server(DoorRestartSystem plugin) => this.plugin = plugin;
         public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
 
         public void OnRoundStarted()
@@ -17,7 +17,7 @@ namespace DoorRestartSystem.Handlers
                 Timing.KillCoroutines(handle);
 
             int y = plugin.Gen.Next(100);
-            if (y <= plugin.Config.Spawnchance)
+            if (y < plugin.Config.Spawnchance)
             {            
             Coroutines.Add(Timing.RunCoroutine(plugin.RunBlackoutTimer()));
             } 

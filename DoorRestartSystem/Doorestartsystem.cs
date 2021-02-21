@@ -34,8 +34,7 @@ namespace DoorRestartSystem
 
         public override void OnDisabled()
         {
-            foreach (CoroutineHandle handle in server.Coroutines)
-                Timing.KillCoroutines(handle);
+            Timing.KillCoroutines(server.Coroutine);
             unRegisterEvents();
             base.OnDisabled();
         }

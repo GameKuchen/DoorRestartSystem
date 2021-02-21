@@ -1,5 +1,5 @@
 ## Door-Restart-System V2.7
-https://img.shields.io/github/downloads/gamekuchen/doorrestartsystem/total?style=for-the-badge
+[img]https://img.shields.io/github/downloads/gamekuchen/doorrestartsystem/total?style=for-the-badge[/img]
 ## Info
 The Plugin will Close and Lock all Doors for about 10 Seconds.
  

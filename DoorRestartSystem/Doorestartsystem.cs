@@ -9,15 +9,15 @@ using MEC;
 namespace DoorRestartSystem
 {
 
-    public class DoorRestartsystem : Plugin<Config>
+    public class DoorRestartSystem : Plugin<Config>
     {
         public override string Author => "GameKuchen";
         public override string Name => "DoorRestartSystem";
         public override string Prefix => "DRS";
-        public override Version Version => new Version(2, 5, 0);
+        public override Version Version => new Version(2, 7, 0);
         public override Version RequiredExiledVersion => new Version(2, 1, 30);
         public Random Gen = new Random();
-        public static DoorRestartsystem Singleton;
+        public static DoorRestartSystem Singleton;
         private Handlers.Server server;
         private Handlers.Player player;
         public NineTailedFoxAnnouncer Respawn;
@@ -27,17 +27,17 @@ namespace DoorRestartSystem
 
         public override void OnEnabled()
         {
-            base.OnEnabled();
             Singleton = this;
             registerEvents();
+            base.OnEnabled();
         }
 
         public override void OnDisabled()
         {
-            base.OnDisabled();
             foreach (CoroutineHandle handle in server.Coroutines)
                 Timing.KillCoroutines(handle);
             unRegisterEvents();
+            base.OnDisabled();
         }
 
         public static void softlockDoors()
@@ -73,10 +73,9 @@ namespace DoorRestartSystem
         {
             yield return Timing.WaitForSeconds(Config.InitialDelay);
             yield return Timing.WaitForSeconds((float)random.NextDouble() * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);
-
             for (; ; )
             {
-                yield return Timing.WaitUntilTrue(() => !Warhead.IsDetonated || !Warhead.IsInProgress);
+                yield return Timing.WaitUntilTrue(() => !(Warhead.IsDetonated || Warhead.IsInProgress));
                 Cassie.Message(Config.DoorSentence, false, true);
 
                 TimerOn = true;

@@ -101,7 +101,7 @@ namespace DoorRestartSystem
                 yield return Timing.WaitForSeconds(BlackoutDur);
                 foreach (DoorVariant door in Map.Doors)
                 {
-                    door.ServerChangeLock(DoorLockReason.AdminCommand, false);
+                    door.ServerChangeLock(DoorLockReason.SpecialDoorFeature, false);
                 }
                 Cassie.Message(Config.DoorAfterSentence, false, true);
                 yield return Timing.WaitForSeconds((float)random.NextDouble() * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);

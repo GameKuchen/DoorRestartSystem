@@ -9,30 +9,27 @@ namespace DoorRestartSystem.Handlers
     {
         private readonly DoorRestartSystem plugin;
         public Server(DoorRestartSystem plugin) => this.plugin = plugin;
-        public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
+        public CoroutineHandle Coroutine;
 
         public void OnRoundStarted()
         {
-            foreach (CoroutineHandle handle in Coroutines)
-                Timing.KillCoroutines(handle);
+            Timing.KillCoroutines(Coroutine);
 
             int y = plugin.Gen.Next(100);
             if (y < plugin.Config.Spawnchance)
-            {            
-            Coroutines.Add(Timing.RunCoroutine(plugin.RunBlackoutTimer()));
+            {
+                Coroutine = Timing.RunCoroutine(plugin.RunBlackoutTimer());
             } 
         }
 
         public void OnRoundEnd(RoundEndedEventArgs ev)
         {
-            foreach (CoroutineHandle handle in Coroutines)
-                Timing.KillCoroutines(handle);
+            Timing.KillCoroutines(Coroutine);
         }
 
         public void OnWaitingForPlayers()
         {
-            foreach (CoroutineHandle handle in Coroutines)
-                Timing.KillCoroutines(handle);
+            Timing.KillCoroutines(Coroutine);
         }   
     }
 }

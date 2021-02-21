@@ -76,7 +76,7 @@ namespace DoorRestartSystem
 
             for (; ; )
             {
-                yield return Timing.WaitUntilTrue(() => Warhead.IsDetonated || Warhead.IsInProgress);
+                yield return Timing.WaitUntilTrue(() => !Warhead.IsDetonated || !Warhead.IsInProgress);
                 Cassie.Message(Config.DoorSentence, false, true);
 
                 TimerOn = true;

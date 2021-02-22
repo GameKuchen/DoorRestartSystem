@@ -1,8 +1,7 @@
 ## Door-Restart-System V2.7
 ![img](https://img.shields.io/github/downloads/gamekuchen/doorrestartsystem/total?style=for-the-badge)
 ## Info
-The Plugin will Close and Lock all Doors for about 10 Seconds.
- 
-I litterally changed everything for the release of Exiled 2.0 because it was requested.
+This is a <SCP SL Exiled 2> plugin that allows for the facility to have a "Door Software Restart". 
+The plugin closes and full locks all doors for the configurated time and then unlocks them again.
 
-If you find any problems please open an Issue.
+Rumors say that these "glitches" happen because someone spilled their coffee on the system in a rush to leave the facility.

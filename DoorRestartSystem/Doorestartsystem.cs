@@ -81,7 +81,7 @@ namespace DoorRestartSystem
                 { 
                     if(door.Type != DoorType.NukeSurface) 
                     {
-                        door.Open = false;
+                        door.IsOpen = false;
                         door.Base.ServerChangeLock(DoorLockReason.AdminCommand, true);
                     }
                 }

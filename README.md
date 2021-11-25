@@ -7,7 +7,7 @@ The plugin closes and full locks all doors for the configurated time and then un
 Rumors say that these "glitches" happen because someone spilled their coffee on the system in a rush to leave the facility.
 
 ## Configs:
-`DRS:
+```DRS:
 # Enable or disable DoorRestartSystem.
   is_enabled: true
   # The InitialDelay before the first Door Restart can happen
@@ -29,4 +29,4 @@ Rumors say that these "glitches" happen because someone spilled their coffee on 
   # The time between the sentence and the 3 . 2 . 1 announcement
   time_between_sentence_and_start: 12
   # The sentence it transmits via Cassie after the system got restarted
-  door_after_sentence: DOOR CONTROL SYSTEM REPAIR COMPLETE`
+  door_after_sentence: DOOR CONTROL SYSTEM REPAIR COMPLETE```

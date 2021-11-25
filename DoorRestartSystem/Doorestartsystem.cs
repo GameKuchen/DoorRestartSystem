@@ -41,9 +41,9 @@ namespace DoorRestartSystem
 
         public static void softlockDoors()
         {
-            foreach (DoorVariant door in Map.Doors)
+            foreach (Door door in Map.Doors)
             {
-                door.ServerChangeLock(DoorLockReason.Warhead, true);
+                door.ChangeLock(DoorLockType.Warhead);
             }
         }
 
@@ -88,18 +88,17 @@ namespace DoorRestartSystem
                 float BlackoutDur = (float)(random.NextDouble() * (Config.DurationMax - Config.DurationMin) + Config.DurationMin);
 
 
-                foreach (DoorVariant door in Map.Doors)
+                foreach (Door door in Map.Doors)
                 {
-                   if(door.Type() != DoorType.NukeSurface)
+                    if (door.Type != DoorType.NukeSurface)
                     {
-                        door.NetworkTargetState = false;
-                        door.ServerChangeLock(DoorLockReason.SpecialDoorFeature, true);
+                        door.ChangeLock(DoorLockType.SpecialDoorFeature);
                     }
                 }
                 yield return Timing.WaitForSeconds(BlackoutDur);
-                foreach (DoorVariant door in Map.Doors)
+                foreach (Door door in Map.Doors)
                 {
-                    door.ServerChangeLock(DoorLockReason.SpecialDoorFeature, false);
+                    door.ChangeLock(DoorLockType.SpecialDoorFeature);
                 }
                 Cassie.Message(Config.DoorAfterSentence, false, true);
                 yield return Timing.WaitForSeconds((float)random.NextDouble() * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);

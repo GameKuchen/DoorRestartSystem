@@ -1,4 +1,4 @@
-## Door-Restart-System V2.7
+## Door-Restart-System V3.2
 ![img](https://img.shields.io/github/downloads/gamekuchen/doorrestartsystem/total?style=for-the-badge)
 ## Info
 This is a <SCP SL Exiled 3.0> plugin that allows for the facility to have a "Door Software Restart". 

@@ -92,6 +92,8 @@ namespace DoorRestartSystem
                 {
                     if (door.Type != DoorType.NukeSurface)
                     {
+                        if (Config.CloseDoors)
+                            door.IsOpen = false;
                         door.ChangeLock(DoorLockType.SpecialDoorFeature);
                     }
                 }

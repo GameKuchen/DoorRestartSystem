@@ -37,5 +37,8 @@ namespace DoorRestartSystem
 
         [Description("The sentence it transmits via Cassie after the system got restarted")]
         public string DoorAfterSentence { get; set; } = "DOOR CONTROL SYSTEM REPAIR COMPLETE";
+
+        [Description("Should doors close during lockdown (NOTE: This will effect 914 machine doors, use with caution!)")]
+        public bool CloseDoors { get; set; } = false;
     }
 }

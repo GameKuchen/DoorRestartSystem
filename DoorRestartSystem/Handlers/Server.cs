@@ -1,25 +1,30 @@
-using System.Collections.Generic;
-using Exiled.API.Features;
-using Exiled.Events.EventArgs;
+﻿using Exiled.Events.EventArgs;
 using MEC;
+using Exiled.API.Features;
+
 
 namespace DoorRestartSystem.Handlers
 {
     internal sealed class Server
     {
-        private readonly DoorRestartSystem plugin;
-        public Server(DoorRestartSystem plugin) => this.plugin = plugin;
+        private readonly DoorRestartSystem _plugin;
+        public Server(DoorRestartSystem plugin) => _plugin = plugin;
         public CoroutineHandle Coroutine;
 
         public void OnRoundStarted()
         {
             Timing.KillCoroutines(Coroutine);
 
-            int y = plugin.Gen.Next(100);
-            if (y < plugin.Config.Spawnchance)
+            var y = _plugin.Gen.Next(100);
+            if (y < _plugin.Config.Spawnchance)
             {
-                Coroutine = Timing.RunCoroutine(plugin.RunBlackoutTimer());
+                Coroutine = Timing.RunCoroutine(_plugin.RunBlackoutTimer());
             } 
+            
+            foreach (Door door in Map.Doors)
+            {
+                Log.Info(door);
+            }
         }
 
         public void OnRoundEnd(RoundEndedEventArgs ev)

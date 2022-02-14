@@ -1,5 +1,6 @@
 ## Door-Restart-System 3.4
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/gamekuchen/DoorRestartSystem/v3.4.2/total?style=for-the-badge)
+[![forthebadge](https://forthebadge.com/images/badges/contains-tasty-spaghetti-code.svg)](https://forthebadge.com)
 ## Info
 This is a <SCP SL Exiled 4.0> plugin that allows for the facility to have a "Door Software Restart". 
 The plugin closes and full locks all doors for the configurated time and then unlocks them again.

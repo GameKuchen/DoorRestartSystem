@@ -1,14 +1,13 @@
 ﻿using Exiled.Events.EventArgs;
 using MEC;
-using Exiled.API.Features;
 
 
-namespace DoorRestartSystem.Handlers
+namespace DoorRestartSystem2.Handlers
 {
     internal sealed class Server
     {
-        private readonly DoorRestartSystem _plugin;
-        public Server(DoorRestartSystem plugin) => _plugin = plugin;
+        private readonly DoorRestartSystemNew _plugin;
+        public Server(DoorRestartSystemNew plugin) => _plugin = plugin;
         public CoroutineHandle Coroutine;
 
         public void OnRoundStarted()
@@ -19,11 +18,6 @@ namespace DoorRestartSystem.Handlers
             if (y < _plugin.Config.Spawnchance)
             {
                 Coroutine = Timing.RunCoroutine(_plugin.RunBlackoutTimer());
-            } 
-            
-            foreach (Door door in Map.Doors)
-            {
-                Log.Info(door);
             }
         }
 

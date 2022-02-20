@@ -16,7 +16,7 @@ namespace DoorRestartSystem2
         public override string Author => "GameKuchen";
         public override string Name => "DoorRestartSystem";
         public override string Prefix => "DRS";
-        public override Version Version => new Version(3, 4, 0);
+        public override Version Version => new Version(3, 5, 0);
         public override Version RequiredExiledVersion => new Version(5, 0, 0);
         public Random Gen = new Random();
         private static DoorRestartSystemNew _singleton;

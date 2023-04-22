@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Extensions;
+using Exiled.Events.EventArgs.Server;
 using Interactables.Interobjects.DoorUtils;
 using MEC;
 using UnityEngine;
@@ -17,11 +18,10 @@ namespace DoorRestartSystem2
         public override string Name => "DoorRestartSystem";
         public override string Prefix => "DRS";
         public override Version Version => new Version(3, 5, 0);
-        public override Version RequiredExiledVersion => new Version(5, 0, 0);
+        public override Version RequiredExiledVersion => new Version(6, 0, 0);
         public Random Gen = new Random();
         private static DoorRestartSystemNew _singleton;
         private Handlers.Server _server;
-        public NineTailedFoxAnnouncer Respawn;
         private static bool _timerOn = true;
         private Random Random { get; } = new Random();
         public override PluginPriority Priority => PluginPriority.Medium;
@@ -39,27 +39,20 @@ namespace DoorRestartSystem2
             UnRegisterEvents();
             base.OnDisabled();
         }
-
-        public static void SoftlockDoors()
-        {
-            foreach (var door in Door.List)
-            {
-                door.ChangeLock(DoorLockType.Warhead);
-            }
-        }
+        
 
         private void RegisterEvents()
         {
             _server = new Handlers.Server(this);
             Exiled.Events.Handlers.Server.RoundStarted += _server.OnRoundStarted;
-            Exiled.Events.Handlers.Server.RoundEnded += _server.OnRoundEnd;
+            Exiled.Events.Handlers.Server.EndingRound += _server.OnRoundEnding;
             Exiled.Events.Handlers.Server.WaitingForPlayers += _server.OnWaitingForPlayers;
         }
 
         private void UnRegisterEvents()
         {
             Exiled.Events.Handlers.Server.RoundStarted -= _server.OnRoundStarted;
-            Exiled.Events.Handlers.Server.RoundEnded -= _server.OnRoundEnd;
+            Exiled.Events.Handlers.Server.EndingRound += _server.OnRoundEnding;
             Exiled.Events.Handlers.Server.WaitingForPlayers -= _server.OnWaitingForPlayers;
 
             _server = null;

@@ -1,4 +1,4 @@
-﻿using Exiled.Events.EventArgs;
+using Exiled.Events.EventArgs.Server;
 using MEC;
 
 
@@ -21,7 +21,7 @@ namespace DoorRestartSystem2.Handlers
             }
         }
 
-        public void OnRoundEnd(RoundEndedEventArgs ev)
+        public void OnRoundEnding(EndingRoundEventArgs ev)
         {
             Timing.KillCoroutines(Coroutine);
         }

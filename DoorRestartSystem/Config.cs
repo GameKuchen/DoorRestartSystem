@@ -1,12 +1,15 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using Exiled.API.Interfaces;
 
 namespace DoorRestartSystem2
 {
-    public sealed class Config : IConfig
+    public class Config : IConfig
     {
         [Description("Enable or disable DoorRestartSystem.")]
         public bool IsEnabled { get; set; } = true;
+        
+        [Description("Enables debugging.")]
+        public bool Debug { get; set; } = false;
 
         [Description("The InitialDelay before the first Door Restart can happen")]
         public float InitialDelay { get; set; } = 120f;

@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using Exiled.API.Interfaces;
 
-namespace DoorRestartSystem2
+namespace DoorRestartSystem
 {
     public class Config : IConfig
     {

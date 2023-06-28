@@ -2,14 +2,10 @@ using System;
 using System.Collections.Generic;
 using Exiled.API.Enums;
 using Exiled.API.Features;
-using Exiled.API.Extensions;
-using Exiled.Events.EventArgs.Server;
-using Interactables.Interobjects.DoorUtils;
 using MEC;
-using UnityEngine;
-using Random = System.Random;
+using Server = DoorRestartSystem.Handlers.Server;
 
-namespace DoorRestartSystem2
+namespace DoorRestartSystem
 {
 
     public class DoorRestartSystemNew : Plugin<Config>
@@ -19,16 +15,12 @@ namespace DoorRestartSystem2
         public override string Prefix => "DRS";
         public override Version Version => new Version(3, 5, 0);
         public override Version RequiredExiledVersion => new Version(6, 0, 0);
-        public Random Gen = new Random();
-        private static DoorRestartSystemNew _singleton;
-        private Handlers.Server _server;
+        private Server _server;
         private static bool _timerOn = true;
-        private Random Random { get; } = new Random();
         public override PluginPriority Priority => PluginPriority.Medium;
 
         public override void OnEnabled()
         {
-            _singleton = this;
             RegisterEvents();
             base.OnEnabled();
         }
@@ -43,16 +35,16 @@ namespace DoorRestartSystem2
 
         private void RegisterEvents()
         {
-            _server = new Handlers.Server(this);
+            _server = new Server(this);
             Exiled.Events.Handlers.Server.RoundStarted += _server.OnRoundStarted;
-            Exiled.Events.Handlers.Server.EndingRound += _server.OnRoundEnding;
+            Exiled.Events.Handlers.Server.RoundEnded += _server.OnRoundEnded;
             Exiled.Events.Handlers.Server.WaitingForPlayers += _server.OnWaitingForPlayers;
         }
 
         private void UnRegisterEvents()
         {
             Exiled.Events.Handlers.Server.RoundStarted -= _server.OnRoundStarted;
-            Exiled.Events.Handlers.Server.EndingRound += _server.OnRoundEnding;
+            Exiled.Events.Handlers.Server.RoundEnded -= _server.OnRoundEnded;
             Exiled.Events.Handlers.Server.WaitingForPlayers -= _server.OnWaitingForPlayers;
 
             _server = null;
@@ -61,7 +53,7 @@ namespace DoorRestartSystem2
         public IEnumerator<float> RunBlackoutTimer()
         {
             yield return Timing.WaitForSeconds(Config.InitialDelay);
-            yield return Timing.WaitForSeconds((float)Random.NextDouble() * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);
+            yield return Timing.WaitForSeconds(UnityEngine.Random.value * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);
             for (; ; )
             {
                 yield return Timing.WaitUntilTrue(() => !(Warhead.IsDetonated || Warhead.IsInProgress));
@@ -75,7 +67,7 @@ namespace DoorRestartSystem2
                     yield return Timing.WaitForSeconds(3f);
                 }
 
-                var blackoutDur = (float)(Random.NextDouble() * (Config.DurationMax - Config.DurationMin) + Config.DurationMin);
+                var blackoutDur = UnityEngine.Random.value * (Config.DurationMax - Config.DurationMin) + Config.DurationMin;
 
 
                 foreach (var door in Door.List)
@@ -92,7 +84,7 @@ namespace DoorRestartSystem2
                     door.ChangeLock(DoorLockType.SpecialDoorFeature);
                 }
                 Cassie.Message(Config.DoorAfterSentence);
-                yield return Timing.WaitForSeconds((float)Random.NextDouble() * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);
+                yield return Timing.WaitForSeconds(UnityEngine.Random.value * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);
                 _timerOn = false;
             }
         }

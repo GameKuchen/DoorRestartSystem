@@ -1,8 +1,7 @@
 using Exiled.Events.EventArgs.Server;
 using MEC;
 
-
-namespace DoorRestartSystem2.Handlers
+namespace DoorRestartSystem.Handlers
 {
     internal sealed class Server
     {
@@ -13,22 +12,16 @@ namespace DoorRestartSystem2.Handlers
         public void OnRoundStarted()
         {
             Timing.KillCoroutines(Coroutine);
-
-            var y = _plugin.Gen.Next(100);
-            if (y < _plugin.Config.Spawnchance)
-            {
+            
+            if (UnityEngine.Random.Range(0, 100) < _plugin.Config.Spawnchance)
                 Coroutine = Timing.RunCoroutine(_plugin.RunBlackoutTimer());
-            }
         }
-
-        public void OnRoundEnding(EndingRoundEventArgs ev)
-        {
-            Timing.KillCoroutines(Coroutine);
-        }
+        
 
         public void OnWaitingForPlayers()
-        {
-            Timing.KillCoroutines(Coroutine);
-        }   
+            => Timing.KillCoroutines(Coroutine);
+
+        public void OnRoundEnded(RoundEndedEventArgs ev)
+            => Timing.KillCoroutines(Coroutine);
     }
 }

@@ -194,13 +194,13 @@ namespace DoorRestartSystem
                 // End Event
                 if (isLockdown)
                 {
-                    yield return Timing.WaitForSeconds(lockdownDur - Config.TimeBetweenSentenceAndStart);
+                    yield return Timing.WaitForSeconds(lockdownDur);
+                    Cassie.Message(Config.CassieMessageEnd, false, false);
                     foreach (Door d in changedDoors)
                     {
                         if (d.Type == DoorType.NukeSurface) continue;
                         d.ChangeLock(DoorLockType.SpecialDoorFeature);
-                    }
-                    Cassie.Message(Config.CassieMessageEnd, false, false);
+                    }         
                     yield return Timing.WaitForSeconds(8.0f);
 
                 }

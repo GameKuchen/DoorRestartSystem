@@ -33,6 +33,12 @@ namespace DoorRestartSystem
         public bool Countdown { get; set; } = false;
 
         // MESSAGES
+        [Description("Glitch chance during message per word in CASSIE sentence.")]
+        public float GlitchChance { get; private set; } = 10f;
+
+        [Description("Jam chance during message per word in CASSIE sentence.")]
+        public float JamChance { get; private set; } = 5f;
+
         [Description("Message said by Cassie if no lockdown occurs")]
         public string CassieMessageWrong { get; set; } = ". I have prevented the system failure . .g5 Sorry for a .g3 . false alert .";
 

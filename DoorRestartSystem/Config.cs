@@ -15,10 +15,10 @@ namespace DoorRestartSystem
         public int InitialDelay { get; set; } = 60;
 
         [Description("The Minumum Duration of the Lockdown")]
-        public int DurationMin { get; set; } = 5;
+        public int DurationMin { get; set; } = 10;
 
         [Description("The Maximum Duration of the Lockdown")]
-        public int DurationMax { get; set; } = 25;
+        public int DurationMax { get; set; } = 35;
 
         [Description("The The Minumum Delay before the next the Lockdown")]
         public int DelayMin { get; set; } = 60;
@@ -26,7 +26,7 @@ namespace DoorRestartSystem
         [Description("The The Maxiumum Delay before the next the Lockdown")]
         public int DelayMax { get; set; } = 200;
 
-        [Description("The chance that a Round even has Doorsystemrestarts")]
+        [Description("The chance that a Round even has DoorSystemRestarts")]
         public float Spawnchance { get; set; } = 55;
 
         [Description("Enable 3 . 2 . 1 announcement")]
@@ -67,7 +67,7 @@ namespace DoorRestartSystem
         public string CassieKeter { get; set; } = "pitch_0.15 .g7";
 
         [Description("The message CASSIE will say when a lockdown ends.")]
-        public string CassieMessageEnd { get; set; } = "facility power system now operational";
+        public string CassieMessageEnd { get; set; } = "facility door control system is now operational";
 
         // Probability 
         [Description("A lockdown in the whole facility will occur if none of the zones are selected randomly and EnableFacilityLockdown is set to true.")]

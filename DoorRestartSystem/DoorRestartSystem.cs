@@ -172,19 +172,22 @@ namespace DoorRestartSystem
                         if (!Config.UsePerRoomChances && isOth && !isOthMsg) { Cassie.Message(Config.CassieMessageOther, false, true); isOthMsg = true; }
                     }
                 }
-                if (!isLockdown && Config.EnableFacilityLockdown)
+                if (!isLockdown)
                 {
-
-                    foreach (Door d in Door.List)
+                    if (Config.EnableFacilityLockdown)
                     {
-                        if (d.Type == DoorType.NukeSurface) continue;
-                        if (Config.CloseDoors) d.IsOpen = false;
-                        d.ChangeLock(DoorLockType.SpecialDoorFeature);
-                        changedDoors.Add(d);
+                        foreach (Door d in Door.List)
+                        {
+                            if (d.Type == DoorType.NukeSurface) continue;
+                            if (Config.CloseDoors) d.IsOpen = false;
+                            d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                            changedDoors.Add(d);
+                        }
+                        isLockdown = true;
+                        Cassie.Message(Config.CassieMessageFacility, false, true);
                     }
-                    isLockdown = true;
-                    Cassie.Message(Config.CassieMessageFacility, false, true);
                 }
+                else if (Config.UsePerRoomChances) Cassie.Message(Config.CassieMessageOther, false, true);
 
 
 

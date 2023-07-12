@@ -105,7 +105,7 @@ namespace DoorRestartSystem
                             }
                             isLockdown = true;
                         }
-                        if (!Config.UsePerRoomChances && isHeavy && !isHeavyMsg) { Cassie.GlitchyMessage(Config.CassieMessageHeavy, Config.GlitchChance/100, Config.JamChance/100); isHeavyMsg = true; }
+                        if (!Config.UsePerRoomChances && isHeavy && !isHeavyMsg) { Cassie.Message(Config.CassieMessageHeavy, false, false); isHeavyMsg = true; }
                     }
                     //Light
                     else if (r.Type.ToString().Contains("Lcz"))
@@ -121,7 +121,7 @@ namespace DoorRestartSystem
                             }
                             isLockdown = true;
                         }
-                        if (!Config.UsePerRoomChances && isLight && !isLightMsg) { Cassie.GlitchyMessage(Config.CassieMessageLight, Config.GlitchChance/100, Config.JamChance/100); isLightMsg = true; }
+                        if (!Config.UsePerRoomChances && isLight && !isLightMsg) { Cassie.Message(Config.CassieMessageLight, false, false); isLightMsg = true; }
                     }
                     //Entrance 
                     else if (r.Type.ToString().Contains("Ez"))
@@ -137,7 +137,7 @@ namespace DoorRestartSystem
                             }
                             isLockdown = true;
                         }
-                        if (!Config.UsePerRoomChances && isEnt && !isEntMsg) { Cassie.GlitchyMessage(Config.CassieMessageEntrance, Config.GlitchChance/100, Config.JamChance/100); isEntMsg = true; }
+                        if (!Config.UsePerRoomChances && isEnt && !isEntMsg) { Cassie.Message(Config.CassieMessageEntrance, false, false); isEntMsg = true; }
                     }
                     //Surface 
                     else if (r.Type.ToString().Contains("Surface"))
@@ -153,7 +153,7 @@ namespace DoorRestartSystem
                             }
                             isLockdown = true;
                         }
-                        if (!Config.UsePerRoomChances && isSur && !isSurMsg) { Cassie.GlitchyMessage(Config.CassieMessageSurface, Config.GlitchChance/100, Config.JamChance/100); isSurMsg = true; }
+                        if (!Config.UsePerRoomChances && isSur && !isSurMsg) { Cassie.Message(Config.CassieMessageSurface, false, false); isSurMsg = true; }
                     }
                     //Misc
                     else
@@ -169,7 +169,7 @@ namespace DoorRestartSystem
                             }
                             isLockdown = true;
                         }
-                        if (!Config.UsePerRoomChances && isOth && !isOthMsg) { Cassie.GlitchyMessage(Config.CassieMessageOther, Config.GlitchChance/100, Config.JamChance/100); isOthMsg = true; }
+                        if (!Config.UsePerRoomChances && isOth && !isOthMsg) { Cassie.Message(Config.CassieMessageOther, false, false); isOthMsg = true; }
                     }
                 }
                 if (!isLockdown)
@@ -184,10 +184,10 @@ namespace DoorRestartSystem
                             changedDoors.Add(d);
                         }
                         isLockdown = true;
-                        Cassie.GlitchyMessage(Config.CassieMessageFacility, Config.GlitchChance/100, Config.JamChance/100);
+                        Cassie.Message(Config.CassieMessageFacility, false, false);
                     }
                 }
-                else if (Config.UsePerRoomChances) Cassie.GlitchyMessage(Config.CassieMessageOther, Config.GlitchChance/100, Config.JamChance/100);
+                else if (Config.UsePerRoomChances) Cassie.Message(Config.CassieMessageOther, false, false);
 
 
 

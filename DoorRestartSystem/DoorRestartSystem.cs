@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.Loader;
 using MEC;
 using Server = DoorRestartSystem.Handlers.Server;
 
@@ -10,13 +11,12 @@ namespace DoorRestartSystem
 
     public class DoorRestartSystemNew : Plugin<Config>
     {
-        public override string Author => "GameKuchen";
+        public override string Author => "GameKuchen & iomatix";
         public override string Name => "DoorRestartSystem";
         public override string Prefix => "DRS";
-        public override Version Version => new Version(3, 7, 0);
-        public override Version RequiredExiledVersion => new Version(6, 0, 0);
+        public override Version Version => new Version(4, 0, 0);
+        public override Version RequiredExiledVersion => new Version(7, 0, 0);
         private Server _server;
-        private static bool _timerOn = true;
         public override PluginPriority Priority => PluginPriority.Medium;
 
         public override void OnEnabled()
@@ -31,7 +31,7 @@ namespace DoorRestartSystem
             UnRegisterEvents();
             base.OnDisabled();
         }
-        
+
 
         private void RegisterEvents()
         {
@@ -52,40 +52,149 @@ namespace DoorRestartSystem
 
         public IEnumerator<float> RunBlackoutTimer()
         {
+
             yield return Timing.WaitForSeconds(Config.InitialDelay);
-            yield return Timing.WaitForSeconds(UnityEngine.Random.value * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);
+            yield return Timing.WaitForSeconds(Loader.Random.Next(Config.DelayMin, Config.DelayMax));
             for (; ; )
             {
                 yield return Timing.WaitUntilTrue(() => !(Warhead.IsDetonated || Warhead.IsInProgress));
-                Cassie.Message(Config.DoorSentence);
 
-                _timerOn = true;
+                bool isLockdown = false;
+                List<Door> changedDoors = new List<Door>();
+                Cassie.Message(Config.CassieMessageStart, false, true);
                 yield return Timing.WaitForSeconds(Config.TimeBetweenSentenceAndStart);
-                if (Config.Countdown)
+                float lockdownDur = (float)Loader.Random.NextDouble() * (Config.DurationMax - Config.DurationMin) + Config.DurationMin;
+
+                Cassie.Message(Config.CassiePostMessage, false, true);
+
+                //Per Zone
+                if (Config.UsePerRoomChances == false)
                 {
-                    Cassie.Message("3 . 2 . 1");
-                    yield return Timing.WaitForSeconds(3f);
+                    List<ZoneType> zones = new List<ZoneType>();
+
+                    bool isOtherMessage = false;
+                    bool isHeavy = false;
+                    bool isLight = false;
+                    bool isEnt = false;
+                    bool isSur = false;
+                    bool isOth = false;
+
+                    if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceHeavy) isHeavy = true;
+                    if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceLight) isLight = true;
+                    if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceEntrance) isEnt = true;
+                    if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceSurface) isSur = true;
+                    if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceOther) isOth = true;
+
+                    foreach (Room r in Room.List)
+                    {
+                        //Heavy 
+                        if (r.Type.ToString().Contains("Hcz"))
+                        {
+                            if ((!Config.UsePerRoomChances && isHeavy) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceHeavy))
+                            {
+                                foreach (Door d in r.Doors)
+                                {
+                                    if (d.Type == DoorType.NukeSurface) continue;
+                                    if (Config.CloseDoors) d.IsOpen = false;
+                                    d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                    changedDoors.Add(d);
+                                }
+                                isLockdown = true;
+                            }
+                        }
+                        //Light
+                        else if (r.Type.ToString().Contains("Lcz"))
+                        {
+                            if ((!Config.UsePerRoomChances && isLight) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceLight))
+                            {
+                                foreach (Door d in r.Doors)
+                                {
+                                    if (d.Type == DoorType.NukeSurface) continue;
+                                    if (Config.CloseDoors) d.IsOpen = false;
+                                    d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                    changedDoors.Add(d);
+                                }
+                            }
+                        }
+                        //Entrance 
+                        else if (r.Type.ToString().Contains("Ez"))
+                        {
+                            if ((!Config.UsePerRoomChances && isEnt) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceEntrance))
+                            {
+                                foreach (Door d in r.Doors)
+                                {
+                                    if (d.Type == DoorType.NukeSurface) continue;
+                                    if (Config.CloseDoors) d.IsOpen = false;
+                                    d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                    changedDoors.Add(d);
+                                }
+                            }
+                        }
+                        //Surface 
+                        else if (r.Type.ToString().Contains("Surface"))
+                        {
+                            if ((!Config.UsePerRoomChances && isSur) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceSurface))
+                            {
+                                foreach (Door d in r.Doors)
+                                {
+                                    if (d.Type == DoorType.NukeSurface) continue;
+                                    if (Config.CloseDoors) d.IsOpen = false;
+                                    d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                    changedDoors.Add(d);
+                                }
+                            }
+                        }
+                        //Misc
+                        else
+                        {
+                            if ((!Config.UsePerRoomChances && isOth) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceOther))
+                            {
+                                foreach (Door d in r.Doors)
+                                {
+                                    if (d.Type == DoorType.NukeSurface) continue;
+                                    if (Config.CloseDoors) d.IsOpen = false;
+                                    d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                    changedDoors.Add(d);
+                                }
+                            }
+                        }
+                    }
+                    if (!isLockdown && Config.EnableFacilityLockdown)
+                    {
+                        isLockdown = true;
+
+                        foreach (Door d in Door.List)
+                        {
+                            if (d.Type == DoorType.NukeSurface) continue;
+                            if (Config.CloseDoors) d.IsOpen = false;
+                            d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                            changedDoors.Add(d);
+                        }
+                        Cassie.Message(Config.CassieMessageFacility, false, true);
+                    }
+                    else Cassie.Message(Config.CassieMessageOther, false, true);
                 }
 
-                var blackoutDur = UnityEngine.Random.value * (Config.DurationMax - Config.DurationMin) + Config.DurationMin;
+
+                // End Event
+                if (isLockdown)
+                {
+                    yield return Timing.WaitForSeconds(lockdownDur - Config.TimeBetweenSentenceAndStart);
+                    foreach (Door d in changedDoors)
+                    {
+                        if (d.Type == DoorType.NukeSurface) continue;
+                        d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                    }
+                    Cassie.Message(Config.CassieMessageEnd, false, false);
+                    yield return Timing.WaitForSeconds(8.0f);
+
+                }
+                else Cassie.Message(Config.CassieMessageWrong, false, false);
 
 
-                foreach (var door in Door.List)
-                {
-                    if (door.Type == DoorType.NukeSurface) continue;
-                    if (Config.CloseDoors)
-                        door.IsOpen = false;
-                    door.ChangeLock(DoorLockType.SpecialDoorFeature);
-                }
-                yield return Timing.WaitForSeconds(blackoutDur);
-                foreach (var door in Door.List)
-                {
-                    if(door.Type == DoorType.NukeSurface) continue;
-                    door.ChangeLock(DoorLockType.SpecialDoorFeature);
-                }
-                Cassie.Message(Config.DoorAfterSentence);
-                yield return Timing.WaitForSeconds(UnityEngine.Random.value * (Config.DelayMax - Config.DelayMin) + Config.DelayMin);
-                _timerOn = false;
+
+                yield return Timing.WaitForSeconds(Loader.Random.Next(Config.DelayMin, Config.DelayMax));
+
             }
         }
     }

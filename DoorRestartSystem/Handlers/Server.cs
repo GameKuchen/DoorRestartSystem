@@ -12,11 +12,11 @@ namespace DoorRestartSystem.Handlers
         public void OnRoundStarted()
         {
             Timing.KillCoroutines(Coroutine);
-            
+
             if (UnityEngine.Random.Range(0, 100) < _plugin.Config.Spawnchance)
                 Coroutine = Timing.RunCoroutine(_plugin.RunBlackoutTimer());
         }
-        
+
 
         public void OnWaitingForPlayers()
             => Timing.KillCoroutines(Coroutine);

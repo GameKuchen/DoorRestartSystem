@@ -67,113 +67,125 @@ namespace DoorRestartSystem
 
                 Cassie.Message(Config.CassiePostMessage, false, true);
 
-                //Per Zone
-                if (Config.UsePerRoomChances == false)
+
+                List<ZoneType> zones = new List<ZoneType>();
+
+                bool isOtherMessage = false;
+                bool isHeavy = false;
+                bool isLight = false;
+                bool isEnt = false;
+                bool isSur = false;
+                bool isOth = false;
+
+                bool isHeavyMsg = false;
+                bool isLightMsg = false;
+                bool isEntMsg = false;
+                bool isSurMsg = false;
+                bool isOthMsg = false;
+
+                if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceHeavy) isHeavy = true;
+                if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceLight) isLight = true;
+                if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceEntrance) isEnt = true;
+                if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceSurface) isSur = true;
+                if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceOther) isOth = true;
+
+                foreach (Room r in Room.List)
                 {
-                    List<ZoneType> zones = new List<ZoneType>();
-
-                    bool isOtherMessage = false;
-                    bool isHeavy = false;
-                    bool isLight = false;
-                    bool isEnt = false;
-                    bool isSur = false;
-                    bool isOth = false;
-
-                    if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceHeavy) isHeavy = true;
-                    if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceLight) isLight = true;
-                    if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceEntrance) isEnt = true;
-                    if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceSurface) isSur = true;
-                    if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceOther) isOth = true;
-
-                    foreach (Room r in Room.List)
+                    //Heavy 
+                    if (r.Type.ToString().Contains("Hcz"))
                     {
-                        //Heavy 
-                        if (r.Type.ToString().Contains("Hcz"))
+                        if ((!Config.UsePerRoomChances && isHeavy) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceHeavy))
                         {
-                            if ((!Config.UsePerRoomChances && isHeavy) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceHeavy))
+                            foreach (Door d in r.Doors)
                             {
-                                foreach (Door d in r.Doors)
-                                {
-                                    if (d.Type == DoorType.NukeSurface) continue;
-                                    if (Config.CloseDoors) d.IsOpen = false;
-                                    d.ChangeLock(DoorLockType.SpecialDoorFeature);
-                                    changedDoors.Add(d);
-                                }
-                                isLockdown = true;
+                                if (d.Type == DoorType.NukeSurface) continue;
+                                if (Config.CloseDoors) d.IsOpen = false;
+                                d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                changedDoors.Add(d);
                             }
+                            isLockdown = true;
                         }
-                        //Light
-                        else if (r.Type.ToString().Contains("Lcz"))
-                        {
-                            if ((!Config.UsePerRoomChances && isLight) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceLight))
-                            {
-                                foreach (Door d in r.Doors)
-                                {
-                                    if (d.Type == DoorType.NukeSurface) continue;
-                                    if (Config.CloseDoors) d.IsOpen = false;
-                                    d.ChangeLock(DoorLockType.SpecialDoorFeature);
-                                    changedDoors.Add(d);
-                                }
-                            }
-                        }
-                        //Entrance 
-                        else if (r.Type.ToString().Contains("Ez"))
-                        {
-                            if ((!Config.UsePerRoomChances && isEnt) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceEntrance))
-                            {
-                                foreach (Door d in r.Doors)
-                                {
-                                    if (d.Type == DoorType.NukeSurface) continue;
-                                    if (Config.CloseDoors) d.IsOpen = false;
-                                    d.ChangeLock(DoorLockType.SpecialDoorFeature);
-                                    changedDoors.Add(d);
-                                }
-                            }
-                        }
-                        //Surface 
-                        else if (r.Type.ToString().Contains("Surface"))
-                        {
-                            if ((!Config.UsePerRoomChances && isSur) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceSurface))
-                            {
-                                foreach (Door d in r.Doors)
-                                {
-                                    if (d.Type == DoorType.NukeSurface) continue;
-                                    if (Config.CloseDoors) d.IsOpen = false;
-                                    d.ChangeLock(DoorLockType.SpecialDoorFeature);
-                                    changedDoors.Add(d);
-                                }
-                            }
-                        }
-                        //Misc
-                        else
-                        {
-                            if ((!Config.UsePerRoomChances && isOth) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceOther))
-                            {
-                                foreach (Door d in r.Doors)
-                                {
-                                    if (d.Type == DoorType.NukeSurface) continue;
-                                    if (Config.CloseDoors) d.IsOpen = false;
-                                    d.ChangeLock(DoorLockType.SpecialDoorFeature);
-                                    changedDoors.Add(d);
-                                }
-                            }
-                        }
+                        if (!Config.UsePerRoomChances && isHeavy && !isHeavyMsg) { Cassie.Message(Config.CassieMessageHeavy, false, true); isHeavyMsg = true; }
                     }
-                    if (!isLockdown && Config.EnableFacilityLockdown)
+                    //Light
+                    else if (r.Type.ToString().Contains("Lcz"))
                     {
-                        isLockdown = true;
-
-                        foreach (Door d in Door.List)
+                        if ((!Config.UsePerRoomChances && isLight) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceLight))
                         {
-                            if (d.Type == DoorType.NukeSurface) continue;
-                            if (Config.CloseDoors) d.IsOpen = false;
-                            d.ChangeLock(DoorLockType.SpecialDoorFeature);
-                            changedDoors.Add(d);
+                            foreach (Door d in r.Doors)
+                            {
+                                if (d.Type == DoorType.NukeSurface) continue;
+                                if (Config.CloseDoors) d.IsOpen = false;
+                                d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                changedDoors.Add(d);
+                            }
+                            isLockdown = true;
                         }
-                        Cassie.Message(Config.CassieMessageFacility, false, true);
+                        if (!Config.UsePerRoomChances && isLight && !isLightMsg) { Cassie.Message(Config.CassieMessageLight, false, true); isLightMsg = true; }
                     }
-                    else Cassie.Message(Config.CassieMessageOther, false, true);
+                    //Entrance 
+                    else if (r.Type.ToString().Contains("Ez"))
+                    {
+                        if ((!Config.UsePerRoomChances && isEnt) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceEntrance))
+                        {
+                            foreach (Door d in r.Doors)
+                            {
+                                if (d.Type == DoorType.NukeSurface) continue;
+                                if (Config.CloseDoors) d.IsOpen = false;
+                                d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                changedDoors.Add(d);
+                            }
+                            isLockdown = true;
+                        }
+                        if (!Config.UsePerRoomChances && isEnt && !isEntMsg) { Cassie.Message(Config.CassieMessageEntrance, false, true); isEntMsg = true; }
+                    }
+                    //Surface 
+                    else if (r.Type.ToString().Contains("Surface"))
+                    {
+                        if ((!Config.UsePerRoomChances && isSur) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceSurface))
+                        {
+                            foreach (Door d in r.Doors)
+                            {
+                                if (d.Type == DoorType.NukeSurface) continue;
+                                if (Config.CloseDoors) d.IsOpen = false;
+                                d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                changedDoors.Add(d);
+                            }
+                            isLockdown = true;
+                        }
+                        if (!Config.UsePerRoomChances && isSur && !isSurMsg) { Cassie.Message(Config.CassieMessageSurface, false, true); isSurMsg = true; }
+                    }
+                    //Misc
+                    else
+                    {
+                        if ((!Config.UsePerRoomChances && isOth) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceOther))
+                        {
+                            foreach (Door d in r.Doors)
+                            {
+                                if (d.Type == DoorType.NukeSurface) continue;
+                                if (Config.CloseDoors) d.IsOpen = false;
+                                d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                changedDoors.Add(d);
+                            }
+                            isLockdown = true;
+                        }
+                        if (!Config.UsePerRoomChances && isOth && !isOthMsg) { Cassie.Message(Config.CassieMessageOther, false, true); isOthMsg = true; }
+                    }
                 }
+                if (!isLockdown && Config.EnableFacilityLockdown)
+                {
+
+                    foreach (Door d in Door.List)
+                    {
+                        if (d.Type == DoorType.NukeSurface) continue;
+                        if (Config.CloseDoors) d.IsOpen = false;
+                        d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                        changedDoors.Add(d);
+                    }
+                    isLockdown = true;
+                    Cassie.Message(Config.CassieMessageFacility, false, true);
+                }
+
 
 
                 // End Event

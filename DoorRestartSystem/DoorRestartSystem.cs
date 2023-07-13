@@ -231,15 +231,16 @@ namespace DoorRestartSystem
             yield return Timing.WaitForSeconds(dur);
             for (; ; )
             {
+                Timing.WaitForSeconds(dur);
                 foreach (Room r in changedRooms)
                 {
+                    
                     if (!r.AreLightsOff)
                     {
-                        Timing.WaitForSeconds(dur);
                         r.TurnOffLights(dur);
-                        Timing.WaitForSeconds(dur);
                     }
                 }
+                Timing.WaitForSeconds(dur);
                 yield return Timing.WaitForSeconds(dur);
             }
         }

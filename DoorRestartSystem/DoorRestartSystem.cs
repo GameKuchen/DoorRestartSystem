@@ -231,7 +231,7 @@ namespace DoorRestartSystem
             yield return Timing.WaitForSeconds(dur);
             for (; ; )
             {
-                Timing.WaitForSeconds(dur);
+                yield return Timing.WaitForSeconds(dur);
                 foreach (Room r in changedRooms)
                 {
                     

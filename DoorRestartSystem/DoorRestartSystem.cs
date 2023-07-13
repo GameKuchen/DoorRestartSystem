@@ -240,7 +240,7 @@ namespace DoorRestartSystem
                         r.TurnOffLights(dur);
                     }
                 }
-                Timing.WaitForSeconds(dur);
+
                 yield return Timing.WaitForSeconds(dur);
             }
         }

@@ -211,8 +211,8 @@ namespace DoorRestartSystem
                             if (d.Type == DoorType.NukeSurface) continue;
                             d.ChangeLock(DoorLockType.SpecialDoorFeature);
                         }
-                        r.ResetColor();
                         if (Config.Flicker && r.AreLightsOff) r.TurnOffLights(1f);
+                        r.ResetColor();
                     }
                     yield return Timing.WaitForSeconds(8.0f);
 

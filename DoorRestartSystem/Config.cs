@@ -32,6 +32,21 @@ namespace DoorRestartSystem
         [Description("Enable 3 . 2 . 1 announcement")]
         public bool Countdown { get; set; } = false;
 
+        //Custom Flicker Lights
+        [Description("Enable lighting flikcer")]
+        public bool Flicker { get; set; } = true;
+
+        [Description("Flikcering Speed in seconds")]
+        public float FlickerFrequency { get; set; } = 2.5f;
+
+        [Description("Red channel of the lights color in the room during lockdown")]
+        public float LightsColorR { get; set; } = 0.85f;
+
+        [Description("Green channel of the lights color in the room during lockdown")]
+        public float LightsColorG { get; set; } = 0.07f;
+
+        [Description("Blue channel of the lights color in the room during lockdown")]
+        public float LightsColorB { get; set; } = 0.23f;
         // MESSAGES
         [Description("Glitch chance during message per word in CASSIE sentence.")]
         public float GlitchChance { get; private set; } = 10f;

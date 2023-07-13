@@ -1,5 +1,6 @@
 using Exiled.Events.EventArgs.Server;
 using MEC;
+using System.Collections.Generic;
 
 namespace DoorRestartSystem.Handlers
 {
@@ -7,21 +8,32 @@ namespace DoorRestartSystem.Handlers
     {
         private readonly DoorRestartSystemNew _plugin;
         public Server(DoorRestartSystemNew plugin) => _plugin = plugin;
-        public CoroutineHandle Coroutine;
+        public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
 
         public void OnRoundStarted()
         {
-            Timing.KillCoroutines(Coroutine);
-
             if (UnityEngine.Random.Range(0, 100) < _plugin.Config.Spawnchance)
-                Coroutine = Timing.RunCoroutine(_plugin.RunBlackoutTimer());
+            {
+                Coroutines.Add(Timing.RunCoroutine(_plugin.RunLockdownTimer()));
+                if (_plugin.Config.Flicker) Coroutines.Add(Timing.RunCoroutine(_plugin.FlickeringLights(_plugin.Config.FlickerFrequency)));
+            }
         }
 
 
         public void OnWaitingForPlayers()
-            => Timing.KillCoroutines(Coroutine);
+        {
+
+            foreach (CoroutineHandle handle in Coroutines) Timing.KillCoroutines(handle);
+            foreach (Exiled.API.Features.Room r in Exiled.API.Features.Room.List) r.ResetColor();
+            Coroutines.Clear();
+
+        }
 
         public void OnRoundEnded(RoundEndedEventArgs ev)
-            => Timing.KillCoroutines(Coroutine);
+        {
+            foreach (CoroutineHandle handle in Coroutines) Timing.KillCoroutines(handle);
+            foreach (Exiled.API.Features.Room r in Exiled.API.Features.Room.List) r.ResetColor();
+            Coroutines.Clear();
+        }
     }
 }

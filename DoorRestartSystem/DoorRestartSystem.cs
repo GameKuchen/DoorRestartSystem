@@ -211,14 +211,12 @@ namespace DoorRestartSystem
                             if (d.Type == DoorType.NukeSurface) continue;
                             d.ChangeLock(DoorLockType.SpecialDoorFeature);
                         }
-                        if (Config.Flicker && r.AreLightsOff) r.TurnOffLights(1f);
                         r.ResetColor();
                     }
                     yield return Timing.WaitForSeconds(8.0f);
 
                 }
                 else Cassie.Message(Config.CassieMessageWrong, false, false);
-
 
                 changedRooms.Clear();
                 yield return Timing.WaitForSeconds(Loader.Random.Next(Config.DelayMin, Config.DelayMax));
@@ -234,14 +232,13 @@ namespace DoorRestartSystem
                 yield return Timing.WaitForSeconds(dur);
                 foreach (Room r in changedRooms)
                 {
-                    
+
                     if (!r.AreLightsOff)
                     {
-                        r.TurnOffLights(dur);
+                        r.TurnOffLights(dur/2);
                     }
                 }
-
-                yield return Timing.WaitForSeconds(dur);
+                yield return Timing.WaitForSeconds(dur/2);
             }
         }
     }

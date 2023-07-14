@@ -203,6 +203,7 @@ namespace DoorRestartSystem
                 {
                     yield return Timing.WaitForSeconds(lockdownDur);
                     Cassie.Message(Config.CassieMessageEnd, false, false);
+                    yield return Timing.WaitForSeconds(8.0f);
                     foreach (Room r in changedRooms)
                     {
 
@@ -215,9 +216,8 @@ namespace DoorRestartSystem
                     }
                 }
                 else Cassie.Message(Config.CassieMessageWrong, false, false);
-
                 changedRooms.Clear();
-                yield return Timing.WaitForSeconds(8.0f);
+
                 yield return Timing.WaitForSeconds(Loader.Random.Next(Config.DelayMin, Config.DelayMax));
 
             }

@@ -213,12 +213,11 @@ namespace DoorRestartSystem
                         }
                         r.ResetColor();
                     }
-                    yield return Timing.WaitForSeconds(8.0f);
-
                 }
                 else Cassie.Message(Config.CassieMessageWrong, false, false);
 
                 changedRooms.Clear();
+                yield return Timing.WaitForSeconds(8.0f);
                 yield return Timing.WaitForSeconds(Loader.Random.Next(Config.DelayMin, Config.DelayMax));
 
             }
@@ -235,10 +234,10 @@ namespace DoorRestartSystem
 
                     if (!r.AreLightsOff)
                     {
-                        r.TurnOffLights(dur/2);
+                        r.TurnOffLights(dur / 2);
                     }
                 }
-                yield return Timing.WaitForSeconds(dur/2);
+                yield return Timing.WaitForSeconds(dur / 2);
             }
         }
     }

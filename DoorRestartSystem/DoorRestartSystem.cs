@@ -102,7 +102,7 @@ namespace DoorRestartSystem
                             {
                                 if (d.Type == DoorType.NukeSurface) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
-                                d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }
                             isLockdown = true;
                         }
@@ -119,7 +119,7 @@ namespace DoorRestartSystem
                             {
                                 if (d.Type == DoorType.NukeSurface) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
-                                d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                if (!d.IsLocked) d.Lock(lockdownDur,DoorLockType.Isolation);
                             }
                             isLockdown = true;
                         }
@@ -136,7 +136,7 @@ namespace DoorRestartSystem
                             {
                                 if (d.Type == DoorType.NukeSurface) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
-                                d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }
                             isLockdown = true;
                         }
@@ -153,7 +153,7 @@ namespace DoorRestartSystem
                             {
                                 if (d.Type == DoorType.NukeSurface) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
-                                d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }
                             isLockdown = true;
                         }
@@ -170,7 +170,7 @@ namespace DoorRestartSystem
                             {
                                 if (d.Type == DoorType.NukeSurface) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
-                                d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }
                             isLockdown = true;
                         }
@@ -189,7 +189,7 @@ namespace DoorRestartSystem
                             {
                                 if (d.Type == DoorType.NukeSurface) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
-                                d.ChangeLock(DoorLockType.SpecialDoorFeature);
+                                if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }
                         }
                         isLockdown = true;
@@ -204,16 +204,7 @@ namespace DoorRestartSystem
                     yield return Timing.WaitForSeconds(lockdownDur);
                     Cassie.Message(Config.CassieMessageEnd, false, false);
                     yield return Timing.WaitForSeconds(8.0f);
-                    foreach (Room r in changedRooms)
-                    {
 
-                        foreach (Door d in r.Doors)
-                        {
-                            if (d.Type == DoorType.NukeSurface) continue;
-                            d.ChangeLock(DoorLockType.SpecialDoorFeature);
-                        }
-                        r.ResetColor();
-                    }
                 }
                 else Cassie.Message(Config.CassieMessageWrong, false, false);
                 changedRooms.Clear();

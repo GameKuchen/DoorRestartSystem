@@ -207,6 +207,8 @@ namespace DoorRestartSystem
 
                 }
                 else Cassie.Message(Config.CassieMessageWrong, false, false);
+
+                foreach (Room r in changedRooms) r.ResetColor();
                 changedRooms.Clear();
 
                 yield return Timing.WaitForSeconds(Loader.Random.Next(Config.DelayMin, Config.DelayMax));

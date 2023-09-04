@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.API.Features.Doors;
 using Exiled.Loader;
 using MEC;
 using Server = DoorRestartSystem.Handlers.Server;
@@ -14,7 +15,7 @@ namespace DoorRestartSystem
         public override string Author => "GameKuchen & iomatix";
         public override string Name => "DoorRestartSystem";
         public override string Prefix => "DRS";
-        public override Version Version => new Version(4, 0, 0);
+        public override Version Version => new Version(4, 1, 0);
         public override Version RequiredExiledVersion => new Version(7, 0, 0);
         private Server _server;
         public override PluginPriority Priority => PluginPriority.Medium;

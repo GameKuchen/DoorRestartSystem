@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Doors;
@@ -8,7 +9,7 @@ using MEC;
 using Server = DoorRestartSystem.Handlers.Server;
 
 namespace DoorRestartSystem
-{
+{ 
 
     public class DoorRestartSystemNew : Plugin<Config>
     {
@@ -20,17 +21,17 @@ namespace DoorRestartSystem
         private Server _server;
         public override PluginPriority Priority => PluginPriority.Medium;
 
-        public List<Room> changedRooms;
+        public List<Room> affectedRooms;
         public override void OnEnabled()
         {
             RegisterEvents();
-            changedRooms = new List<Room>();
+            affectedRooms = new List<Room>();
             base.OnEnabled();
         }
 
         public override void OnDisabled()
         {
-            changedRooms.Clear();
+            affectedRooms.Clear();
             UnRegisterEvents();
             base.OnDisabled();
         }
@@ -52,140 +53,104 @@ namespace DoorRestartSystem
 
             _server = null;
         }
+
         public IEnumerator<float> RunLockdownTimer()
         {
 
             yield return Timing.WaitForSeconds(Config.InitialDelay);
             yield return Timing.WaitForSeconds(Loader.Random.Next(Config.DelayMin, Config.DelayMax));
-            for (; ; )
+            for (;;)
             {
                 yield return Timing.WaitUntilTrue(() => !(Warhead.IsDetonated || Warhead.IsInProgress));
 
                 bool isLockdown = false;
                 Cassie.GlitchyMessage(Config.CassieMessageStart, Config.GlitchChance / 100, Config.JamChance / 100);
                 yield return Timing.WaitForSeconds(Config.TimeBetweenSentenceAndStart);
-                float lockdownDur = (float)Loader.Random.NextDouble() * (Config.DurationMax - Config.DurationMin) + Config.DurationMin;
+                float lockdownDur = (float)Loader.Random.NextDouble() * (Config.DurationMax - Config.DurationMin) +
+                                    Config.DurationMin;
 
                 Cassie.GlitchyMessage(Config.CassiePostMessage, Config.GlitchChance / 100, Config.JamChance / 100);
 
+                List<ZoneType> affectedZones = new List<ZoneType>();
 
-                List<ZoneType> zones = new List<ZoneType>();
 
-                bool isOtherMessage = false;
-                bool isHeavy = false;
-                bool isLight = false;
-                bool isEnt = false;
-                bool isSur = false;
-                bool isOth = false;
 
-                bool isHeavyMsg = false;
-                bool isLightMsg = false;
-                bool isEntMsg = false;
-                bool isSurMsg = false;
-                bool isOthMsg = false;
-
-                if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceHeavy) isHeavy = true;
-                if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceLight) isLight = true;
-                if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceEntrance) isEnt = true;
-                if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceSurface) isSur = true;
-                if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceOther) isOth = true;
-
-                foreach (Room r in Room.List)
+                switch (Config.UsePerRoomChances)
                 {
-                    //Heavy 
-                    if (r.Type.ToString().Contains("Hcz"))
-                    {
-                        if ((!Config.UsePerRoomChances && isHeavy) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceHeavy))
+                    case true:
+                        foreach (Room room in Room.List)
                         {
-                            r.Color = new UnityEngine.Color(Config.LightsColorR, Config.LightsColorG, Config.LightsColorB);
-                            changedRooms.Add(r);
-                            foreach (Door d in r.Doors)
+                            if (room.Type.ToString().StartsWith("Hcz"))
                             {
-                                if (d.Type == DoorType.NukeSurface) continue;
-                                if (Config.CloseDoors) d.IsOpen = false;
-                                if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
+                                if (!(Loader.Random.NextDouble() * 100 < Config.ChanceHeavy)) continue;
+                                affectedRooms.Add(room);
+                                affectedZones.Add(ZoneType.HeavyContainment);
+                                Cassie.Message(Config.CassieMessageHeavy, false, false);
                             }
-                            isLockdown = true;
+                            else if (room.Type.ToString().StartsWith("Lcz"))
+                            {
+                                if (!(Loader.Random.NextDouble() * 100 < Config.ChanceLight)) continue;
+                                room.Color = new UnityEngine.Color(Config.LightsColorR, Config.LightsColorG,
+                                    Config.LightsColorB);
+                                affectedRooms.Add(room);
+                                affectedZones.Add(ZoneType.LightContainment);
+                                Cassie.Message(Config.CassieMessageHeavy, false, false);
+                            }
+                            else if (room.Type.ToString().StartsWith("Ez"))
+                            {
+                                if (!(Loader.Random.NextDouble() * 100 < Config.ChanceLight)) continue;
+                                affectedRooms.Add(room);
+                                affectedZones.Add(ZoneType.Entrance);
+                                Cassie.Message(Config.CassieMessageHeavy, false, false);
+                            }
+                            else if (room.Type.ToString().StartsWith("Surface"))
+                            {
+                                if (!(Loader.Random.NextDouble() * 100 < Config.ChanceLight)) continue;
+                                affectedRooms.Add(room);
+                                affectedZones.Add(ZoneType.Surface);
+                                Cassie.Message(Config.CassieMessageHeavy, false, false);
+                            }
+                            else
+                            {
+                                if (!(Loader.Random.NextDouble() * 100 < Config.ChanceOther)) continue;
+                                affectedRooms.Add(room);
+                                affectedZones.Add(ZoneType.Other);
+                                Cassie.Message(Config.CassieMessageHeavy, false, false);
+                            }
                         }
-                        if (!Config.UsePerRoomChances && isHeavy && !isHeavyMsg) { Cassie.Message(Config.CassieMessageHeavy, false, false); isHeavyMsg = true; }
-                    }
-                    //Light
-                    else if (r.Type.ToString().Contains("Lcz"))
-                    {
-                        if ((!Config.UsePerRoomChances && isLight) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceLight))
+
+                        if (affectedRooms.Count != 0)
                         {
-                            r.Color = new UnityEngine.Color(Config.LightsColorR, Config.LightsColorG, Config.LightsColorB);
-                            changedRooms.Add(r);
-                            foreach (Door d in r.Doors)
-                            {
-                                if (d.Type == DoorType.NukeSurface) continue;
-                                if (Config.CloseDoors) d.IsOpen = false;
-                                if (!d.IsLocked) d.Lock(lockdownDur,DoorLockType.Isolation);
-                            }
                             isLockdown = true;
-                        }
-                        if (!Config.UsePerRoomChances && isLight && !isLightMsg) { Cassie.Message(Config.CassieMessageLight, false, false); isLightMsg = true; }
-                    }
-                    //Entrance 
-                    else if (r.Type.ToString().Contains("Ez"))
-                    {
-                        if ((!Config.UsePerRoomChances && isEnt) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceEntrance))
-                        {
-                            r.Color = new UnityEngine.Color(Config.LightsColorR, Config.LightsColorG, Config.LightsColorB);
-                            changedRooms.Add(r);
-                            foreach (Door d in r.Doors)
+                            foreach (var room in affectedRooms)
                             {
-                                if (d.Type == DoorType.NukeSurface) continue;
-                                if (Config.CloseDoors) d.IsOpen = false;
-                                if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
+                                room.Color = new UnityEngine.Color(Config.LightsColorR, Config.LightsColorG,
+                                    Config.LightsColorB);
+                                foreach (Door d in room.Doors)
+                                {
+                                    if (d.Type == DoorType.NukeSurface) continue;
+                                    if (Config.CloseDoors) d.IsOpen = false;
+                                    if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
+                                }
                             }
-                            isLockdown = true;
                         }
-                        if (!Config.UsePerRoomChances && isEnt && !isEntMsg) { Cassie.Message(Config.CassieMessageEntrance, false, false); isEntMsg = true; }
-                    }
-                    //Surface 
-                    else if (r.Type.ToString().Contains("Surface"))
-                    {
-                        if ((!Config.UsePerRoomChances && isSur) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceSurface))
-                        {
-                            r.Color = new UnityEngine.Color(Config.LightsColorR, Config.LightsColorG, Config.LightsColorB);
-                            changedRooms.Add(r);
-                            foreach (Door d in r.Doors)
-                            {
-                                if (d.Type == DoorType.NukeSurface) continue;
-                                if (Config.CloseDoors) d.IsOpen = false;
-                                if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
-                            }
-                            isLockdown = true;
-                        }
-                        if (!Config.UsePerRoomChances && isSur && !isSurMsg) { Cassie.Message(Config.CassieMessageSurface, false, false); isSurMsg = true; }
-                    }
-                    //Misc
-                    else
-                    {
-                        if ((!Config.UsePerRoomChances && isOth) || (Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < Config.ChanceOther))
-                        {
-                            r.Color = new UnityEngine.Color(Config.LightsColorR, Config.LightsColorG, Config.LightsColorB);
-                            changedRooms.Add(r);
-                            foreach (Door d in r.Doors)
-                            {
-                                if (d.Type == DoorType.NukeSurface) continue;
-                                if (Config.CloseDoors) d.IsOpen = false;
-                                if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
-                            }
-                            isLockdown = true;
-                        }
-                        if (!Config.UsePerRoomChances && isOth && !isOthMsg) { Cassie.Message(Config.CassieMessageOther, false, false); isOthMsg = true; }
-                    }
+
+
+                        break;
+                    default:
+                        //handle other cases
+                        break;
+
                 }
-                if (!isLockdown)
+                
+            if (!isLockdown)
                 {
                     if (Config.EnableFacilityLockdown)
                     {
                         foreach (Room r in Room.List)
                         {
                             r.Color = new UnityEngine.Color(Config.LightsColorR, Config.LightsColorG, Config.LightsColorB);
-                            changedRooms.Add(r);
+                            affectedRooms.Add(r);
                             foreach (Door d in r.Doors)
                             {
                                 if (d.Type == DoorType.NukeSurface) continue;
@@ -204,13 +169,13 @@ namespace DoorRestartSystem
                 {
                     yield return Timing.WaitForSeconds(lockdownDur);
                     Cassie.Message(Config.CassieMessageEnd, false, false);
-                    foreach (Room r in changedRooms) r.ResetColor();
+                    foreach (Room r in affectedRooms) r.ResetColor();
                     yield return Timing.WaitForSeconds(8.0f);
 
                 }
                 else Cassie.Message(Config.CassieMessageWrong, false, false);
 
-                changedRooms.Clear();
+                affectedRooms.Clear();
 
                 yield return Timing.WaitForSeconds(Loader.Random.Next(Config.DelayMin, Config.DelayMax));
 
@@ -223,7 +188,7 @@ namespace DoorRestartSystem
             for (; ; )
             {
                 yield return Timing.WaitForSeconds(dur);
-                foreach (Room r in changedRooms)
+                foreach (Room r in affectedRooms)
                 {
 
                     if (!r.AreLightsOff)

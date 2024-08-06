@@ -1,5 +1,5 @@
-using System.ComponentModel;
 using Exiled.API.Interfaces;
+using System.ComponentModel;
 
 namespace DoorRestartSystem
 {
@@ -14,16 +14,16 @@ namespace DoorRestartSystem
         [Description("The InitialDelay before the first Door Restart can happen")]
         public int InitialDelay { get; set; } = 60;
 
-        [Description("The Minumum Duration of the Lockdown")]
+        [Description("The Minimum Duration of the Lockdown")]
         public int DurationMin { get; set; } = 10;
 
         [Description("The Maximum Duration of the Lockdown")]
         public int DurationMax { get; set; } = 35;
 
-        [Description("The The Minumum Delay before the next the Lockdown")]
+        [Description("The The Minimum Delay before the next the Lockdown")]
         public int DelayMin { get; set; } = 60;
 
-        [Description("The The Maxiumum Delay before the next the Lockdown")]
+        [Description("The The Maximum Delay before the next the Lockdown")]
         public int DelayMax { get; set; } = 200;
 
         [Description("The chance that a Round even has DoorSystemRestarts")]
@@ -33,10 +33,10 @@ namespace DoorRestartSystem
         public bool Countdown { get; set; } = false;
 
         //Custom Flicker Lights
-        [Description("Enable lighting flikcer")]
+        [Description("Enable lighting flicker")]
         public bool Flicker { get; set; } = true;
 
-        [Description("Flikcering Speed in seconds")]
+        [Description("Flickering Speed in seconds")]
         public float FlickerFrequency { get; set; } = 2.5f;
 
         [Description("Red channel of the lights color in the room during lockdown")]

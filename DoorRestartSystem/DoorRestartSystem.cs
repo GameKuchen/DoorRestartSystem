@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Exiled.API.Enums;
 using Exiled.API.Features;
-using Exiled.API.Features.Doors;
 using Exiled.Loader;
 using MEC;
+using System;
+using System.Collections.Generic;
 using Server = DoorRestartSystem.Handlers.Server;
 
 namespace DoorRestartSystem
@@ -120,7 +119,7 @@ namespace DoorRestartSystem
                             {
                                 if (d.Type == DoorType.NukeSurface) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
-                                if (!d.IsLocked) d.Lock(lockdownDur,DoorLockType.Isolation);
+                                if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }
                             isLockdown = true;
                         }

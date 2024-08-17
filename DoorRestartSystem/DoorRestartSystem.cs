@@ -1,5 +1,6 @@
 using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.API.Features.Doors;
 using Exiled.Loader;
 using MEC;
 using System;

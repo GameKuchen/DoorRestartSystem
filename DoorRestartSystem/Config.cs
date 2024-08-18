@@ -1,5 +1,5 @@
-using System.ComponentModel;
 using Exiled.API.Interfaces;
+using System.ComponentModel;
 
 namespace DoorRestartSystem
 {
@@ -11,19 +11,43 @@ namespace DoorRestartSystem
         [Description("Should doors close during lockdown?")]
         public bool CloseDoors { get; set; } = true;
 
+        [Description("Should nuke surface door and hcz elevator be ignored?")]
+        public bool SkipNukeDoors { get; set; } = true;
+
+        [Description("Should unknown doors and elevators be ignored?")]
+        public bool SkipUnknownDoors { get; set; } = true;
+
+        [Description("Should all elevators be ignored?")]
+        public bool SkipElevators { get; set; } = false;
+
+        [Description("Should all airlocks be ignored?")]
+        public bool SkipAirlocks { get; set; } = false;
+
+        [Description("Should all scp rooms be ignored?")]
+        public bool SkipSCPRooms { get; set; } = false;
+
+        [Description("Should all armory doors be ignored?")]
+        public bool SkipArmory { get; set; } = true;
+
+        [Description("Should all checkpoints doors be ignored?")]
+        public bool SkipCheckpoints { get; set; } = true;
+
+        [Description("Should checkpoints gates be ignored? Independents from SkipCheckpoints")]
+        public bool skipCheckpointsGate { get; set; } = false;
+
         [Description("The InitialDelay before the first Door Restart can happen")]
         public int InitialDelay { get; set; } = 60;
 
-        [Description("The Minumum Duration of the Lockdown")]
+        [Description("The Minimum Duration of the Lockdown")]
         public int DurationMin { get; set; } = 10;
 
         [Description("The Maximum Duration of the Lockdown")]
         public int DurationMax { get; set; } = 35;
 
-        [Description("The The Minumum Delay before the next the Lockdown")]
+        [Description("The The Minimum Delay before the next the Lockdown")]
         public int DelayMin { get; set; } = 60;
 
-        [Description("The The Maxiumum Delay before the next the Lockdown")]
+        [Description("The The Maximum Delay before the next the Lockdown")]
         public int DelayMax { get; set; } = 200;
 
         [Description("The chance that a Round even has DoorSystemRestarts")]
@@ -33,10 +57,10 @@ namespace DoorRestartSystem
         public bool Countdown { get; set; } = false;
 
         //Custom Flicker Lights
-        [Description("Enable lighting flikcer")]
+        [Description("Enable lighting flicker")]
         public bool Flicker { get; set; } = true;
 
-        [Description("Flikcering Speed in seconds")]
+        [Description("Flickering Speed in seconds")]
         public float FlickerFrequency { get; set; } = 2.5f;
 
         [Description("Red channel of the lights color in the room during lockdown")]
@@ -55,7 +79,7 @@ namespace DoorRestartSystem
         public float JamChance { get; private set; } = 5f;
 
         [Description("Message said by Cassie if no lockdown occurs")]
-        public string CassieMessageWrong { get; set; } = ". I have prevented the system failure . .g5 Sorry for a .g3 . false alert .";
+        public string CassieMessageWrong { get; set; } = ". I have avoided the system failure . .g5 Sorry for a .g3 . false alert .";
 
         [Description("Message said by Cassie when a lockdown starts - 3 . 2 . 1 announcement")]
         public string CassieMessageStart { get; set; } = "pitch_0.2 .g4 . .g4 pitch_1 door control system pitch_0.25 .g1 pitch_0.9 malfunction pitch_1 . initializing repair";
@@ -66,22 +90,22 @@ namespace DoorRestartSystem
         [Description("Message said by Cassie just after the lockdown.")]
         public string CassiePostMessage { get; set; } = "door control system malfunction has been detected at .";
 
-        [Description("Message said by Cassie after CassiePostMessage if lockdown gonna occure at whole site.")]
+        [Description("Message said by Cassie after CassiePostMessage if lockdown gonna occur at whole site.")]
         public string CassieMessageFacility { get; set; } = "The Facility .";
 
-        [Description("Message said by Cassie after CassiePostMessage if outage gonna occure at the Entrance Zone.")]
+        [Description("Message said by Cassie after CassiePostMessage if outage gonna occur at the Entrance Zone.")]
         public string CassieMessageEntrance { get; set; } = "The Entrance Zone .";
 
-        [Description("Message said by Cassie after CassiePostMessage if outage gonna occure at the Light Containment Zone.")]
+        [Description("Message said by Cassie after CassiePostMessage if outage gonna occur at the Light Containment Zone.")]
         public string CassieMessageLight { get; set; } = "The Light Containment Zone .";
 
-        [Description("Message said by Cassie after CassiePostMessage if outage gonna occure at the Heavy Containment Zone.")]
+        [Description("Message said by Cassie after CassiePostMessage if outage gonna occur at the Heavy Containment Zone.")]
         public string CassieMessageHeavy { get; set; } = "The Heavy Containment Zone.";
 
-        [Description("Message said by Cassie after CassiePostMessage if outage gonna occure at the entrance zone.")]
+        [Description("Message said by Cassie after CassiePostMessage if outage gonna occur at the entrance zone.")]
         public string CassieMessageSurface { get; set; } = "The Surface .";
 
-        [Description("Message said by Cassie after CassiePostMessage if outage gonna occure at random rooms in facility when UseRoomChances is true or unknown type of zones or unspecified zones.")]
+        [Description("Message said by Cassie after CassiePostMessage if outage gonna occur at random rooms in facility when UseRoomChances is true or unknown type of zones or unspecified zones.")]
         public string CassieMessageOther { get; set; } = ". pitch_0.35 .g6 pitch_0.95 the malfunction is Unspecified .";
 
         [Description("The sound CASSIE will make during a lockdown.")]
@@ -109,11 +133,8 @@ namespace DoorRestartSystem
         [Description("Percentage chance of an outage at an unknown and unspecified type of zone during the lockdown.")]
         public int ChanceOther { get; set; } = 0;
 
-        [Description("Change this to true if want to use per room probability settings isntead of per zone settings. The script will check all rooms in the specified zone with its probability.")]
+        [Description("Change this to true if want to use per room probability settings instead of per zone settings. The script will check all rooms in the specified zone with its probability.")]
         public bool UsePerRoomChances { get; set; } = false;
-
-        [Description("The sentence it transmits via Cassie after the system got restarted")]
-        public string DoorAfterSentence { get; set; } = "DOOR CONTROL SYSTEM REPAIR COMPLETE";
 
         [Description("Enables debugging.")]
         public bool Debug { get; set; } = false;

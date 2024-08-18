@@ -11,6 +11,30 @@ namespace DoorRestartSystem
         [Description("Should doors close during lockdown?")]
         public bool CloseDoors { get; set; } = true;
 
+        [Description("Should nuke surface door and hcz elevator be ignored?")]
+        public bool SkipNukeDoors { get; set; } = true;
+
+        [Description("Should unknown doors and elevators be ignored?")]
+        public bool SkipUnknownDoors { get; set; } = true;
+
+        [Description("Should all elevators be ignored?")]
+        public bool SkipElevators { get; set; } = false;
+
+        [Description("Should all airlocks be ignored?")]
+        public bool SkipAirlocks { get; set; } = false;
+
+        [Description("Should all scp rooms be ignored?")]
+        public bool SkipSCPRooms { get; set; } = false;
+
+        [Description("Should all armory doors be ignored?")]
+        public bool SkipArmory { get; set; } = true;
+
+        [Description("Should all checkpoints doors be ignored?")]
+        public bool SkipCheckpoints { get; set; } = true;
+
+        [Description("Should checkpoints gates be ignored? Independents from SkipCheckpoints")]
+        public bool skipCheckpointsGate { get; set; } = false;
+
         [Description("The InitialDelay before the first Door Restart can happen")]
         public int InitialDelay { get; set; } = 60;
 
@@ -111,9 +135,6 @@ namespace DoorRestartSystem
 
         [Description("Change this to true if want to use per room probability settings instead of per zone settings. The script will check all rooms in the specified zone with its probability.")]
         public bool UsePerRoomChances { get; set; } = false;
-
-        [Description("The sentence it transmits via Cassie after the system got restarted")]
-        public string DoorAfterSentence { get; set; } = "DOOR CONTROL SYSTEM REPAIR COMPLETE";
 
         [Description("Enables debugging.")]
         public bool Debug { get; set; } = false;

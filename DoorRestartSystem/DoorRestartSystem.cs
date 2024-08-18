@@ -15,22 +15,106 @@ namespace DoorRestartSystem
         public override string Author => "GameKuchen & iomatix";
         public override string Name => "DoorRestartSystem";
         public override string Prefix => "DRS";
-        public override Version Version => new Version(6, 0, 0);
+        public override Version Version => new Version(6, 1, 0);
         public override Version RequiredExiledVersion => new Version(9, 0, 0);
         private Server _server;
         public override PluginPriority Priority => PluginPriority.Medium;
 
         public List<Room> changedRooms;
+        public List<DoorType> doorTypesToSkip;
         public override void OnEnabled()
         {
             RegisterEvents();
             changedRooms = new List<Room>();
+            doorTypesToSkip = new List<DoorType>();
             base.OnEnabled();
+
+            // Always skip these doors
+            doorTypesToSkip.Add(DoorType.Scp914Door);
+
+            // Nuke doors
+            if (Config.SkipNukeDoors)
+            {
+                doorTypesToSkip.Add(DoorType.NukeSurface);
+                doorTypesToSkip.Add(DoorType.ElevatorNuke);
+            }
+
+            // Unknown doors
+            if (Config.SkipUnknownDoors)
+            {
+                doorTypesToSkip.Add(DoorType.UnknownDoor);
+                doorTypesToSkip.Add(DoorType.UnknownElevator);
+            }
+
+            // Elevators
+            if (Config.SkipElevators)
+            {
+                doorTypesToSkip.Add(DoorType.UnknownElevator);
+                doorTypesToSkip.Add(DoorType.ElevatorGateA);
+                doorTypesToSkip.Add(DoorType.ElevatorGateB);
+                doorTypesToSkip.Add(DoorType.ElevatorLczA);
+                doorTypesToSkip.Add(DoorType.ElevatorLczB);
+                doorTypesToSkip.Add(DoorType.ElevatorNuke);
+                doorTypesToSkip.Add(DoorType.ElevatorScp049);
+            }
+
+            // Airlocks
+            if (Config.SkipAirlocks)
+            {
+                doorTypesToSkip.Add(DoorType.Airlock);
+            }
+
+            // SCP Rooms
+            if (Config.SkipSCPRooms)
+            {
+
+                doorTypesToSkip.Add(DoorType.Scp079First);
+                doorTypesToSkip.Add(DoorType.Scp079Second);
+                doorTypesToSkip.Add(DoorType.Scp049Gate);
+                doorTypesToSkip.Add(DoorType.ElevatorScp049);
+                doorTypesToSkip.Add(DoorType.Scp096);
+                doorTypesToSkip.Add(DoorType.Scp106Primary);
+                doorTypesToSkip.Add(DoorType.Scp106Secondary);
+                doorTypesToSkip.Add(DoorType.Scp173Bottom);
+                doorTypesToSkip.Add(DoorType.Scp173Gate);
+                doorTypesToSkip.Add(DoorType.Scp173NewGate);
+                doorTypesToSkip.Add(DoorType.Scp330);
+                doorTypesToSkip.Add(DoorType.Scp330Chamber);
+                doorTypesToSkip.Add(DoorType.Scp914Gate);
+                doorTypesToSkip.Add(DoorType.Scp914Door);
+                doorTypesToSkip.Add(DoorType.Scp939Cryo);
+            }
+
+            // Checkpoints
+            if (Config.SkipArmory)
+            {
+                doorTypesToSkip.Add(DoorType.CheckpointArmoryA);
+                doorTypesToSkip.Add(DoorType.CheckpointArmoryB);
+                doorTypesToSkip.Add(DoorType.HczArmory);
+                doorTypesToSkip.Add(DoorType.LczArmory);
+                doorTypesToSkip.Add(DoorType.NukeArmory);
+                doorTypesToSkip.Add(DoorType.Scp049Armory);
+                doorTypesToSkip.Add(DoorType.Scp079Armory);
+                doorTypesToSkip.Add(DoorType.Scp173Armory);
+            }
+
+            // Checkpoints
+            if (Config.SkipCheckpoints)
+            {
+                doorTypesToSkip.Add(DoorType.CheckpointLczA);
+                doorTypesToSkip.Add(DoorType.CheckpointLczB);
+                doorTypesToSkip.Add(DoorType.CheckpointEzHczB);
+                doorTypesToSkip.Add(DoorType.CheckpointEzHczA);
+
+            }
+
+
         }
 
         public override void OnDisabled()
         {
             changedRooms.Clear();
+            doorTypesToSkip.Clear();
             UnRegisterEvents();
             base.OnDisabled();
         }
@@ -68,9 +152,6 @@ namespace DoorRestartSystem
 
                 Cassie.GlitchyMessage(Config.CassiePostMessage, Config.GlitchChance / 100, Config.JamChance / 100);
 
-
-                List<ZoneType> zones = new List<ZoneType>();
-
                 bool isOtherMessage = false;
                 bool isHeavy = false;
                 bool isLight = false;
@@ -90,6 +171,11 @@ namespace DoorRestartSystem
                 if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceSurface) isSur = true;
                 if (((float)Loader.Random.NextDouble() * 100) < Config.ChanceOther) isOth = true;
 
+                if (Config.skipCheckpointsGate)
+                {
+                    doorTypesToSkip.Add(DoorType.CheckpointGate);
+                }
+
                 foreach (Room r in Room.List)
                 {
                     //Heavy 
@@ -101,7 +187,7 @@ namespace DoorRestartSystem
                             changedRooms.Add(r);
                             foreach (Door d in r.Doors)
                             {
-                                if (d.Type == DoorType.NukeSurface) continue;
+                                if (doorTypesToSkip.Contains(d.Type)) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
                                 if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }
@@ -118,7 +204,7 @@ namespace DoorRestartSystem
                             changedRooms.Add(r);
                             foreach (Door d in r.Doors)
                             {
-                                if (d.Type == DoorType.NukeSurface) continue;
+                                if (doorTypesToSkip.Contains(d.Type)) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
                                 if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }
@@ -135,7 +221,7 @@ namespace DoorRestartSystem
                             changedRooms.Add(r);
                             foreach (Door d in r.Doors)
                             {
-                                if (d.Type == DoorType.NukeSurface) continue;
+                                if (doorTypesToSkip.Contains(d.Type)) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
                                 if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }
@@ -152,7 +238,7 @@ namespace DoorRestartSystem
                             changedRooms.Add(r);
                             foreach (Door d in r.Doors)
                             {
-                                if (d.Type == DoorType.NukeSurface) continue;
+                                if (doorTypesToSkip.Contains(d.Type)) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
                                 if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }
@@ -169,7 +255,7 @@ namespace DoorRestartSystem
                             changedRooms.Add(r);
                             foreach (Door d in r.Doors)
                             {
-                                if (d.Type == DoorType.NukeSurface) continue;
+                                if (doorTypesToSkip.Contains(d.Type)) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
                                 if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }
@@ -188,7 +274,7 @@ namespace DoorRestartSystem
                             changedRooms.Add(r);
                             foreach (Door d in r.Doors)
                             {
-                                if (d.Type == DoorType.NukeSurface) continue;
+                                if (doorTypesToSkip.Contains(d.Type)) continue;
                                 if (Config.CloseDoors) d.IsOpen = false;
                                 if (!d.IsLocked) d.Lock(lockdownDur, DoorLockType.Isolation);
                             }

@@ -61,7 +61,7 @@ namespace DoorRestartSystem
         [Description("Enable lighting flicker")]
         public bool Flicker { get; set; } = true;
 
-        [Description("Flickering Speed in seconds")]
+        [Description("Flickering frequency. Higher the value faster the flickering.")]
         public float FlickerFrequency { get; set; } = 2.5f;
 
         [Description("Red channel of the lights color in the room during lockdown")]

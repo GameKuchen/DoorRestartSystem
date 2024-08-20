@@ -16,7 +16,7 @@ namespace DoorRestartSystem.Handlers
         {
             if (UnityEngine.Random.Range(0, 100) < _plugin.Config.Spawnchance)
             {
-                
+                _plugin.Methods.Init();
                 Coroutines.Add(Timing.RunCoroutine(_plugin.Methods.StartLockdownRoutine()));
                 
             }
@@ -25,16 +25,16 @@ namespace DoorRestartSystem.Handlers
 
         public void OnWaitingForPlayers()
         {
+            _plugin.Methods.Clean();
             foreach (CoroutineHandle handle in Coroutines) Timing.KillCoroutines(handle);
-            foreach (Exiled.API.Features.Room r in Exiled.API.Features.Room.List) r.ResetColor();
             Coroutines.Clear();
 
         }
 
         public void OnRoundEnded(RoundEndedEventArgs ev)
         {
+            _plugin.Methods.Clean();
             foreach (CoroutineHandle handle in Coroutines) Timing.KillCoroutines(handle);
-            foreach (Exiled.API.Features.Room r in Exiled.API.Features.Room.List) r.ResetColor();
             Coroutines.Clear();
         }
     }

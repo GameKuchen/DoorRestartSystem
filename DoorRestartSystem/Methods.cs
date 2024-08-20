@@ -106,6 +106,7 @@
 
         public void Clean()
         {
+            ResetRoomColors();
             changedRooms.Clear();
             doorTypesToSkip.Clear();
             triggeredZones.Clear();

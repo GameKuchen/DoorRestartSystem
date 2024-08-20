@@ -1,8 +1,9 @@
-using Exiled.API.Interfaces;
-using System.ComponentModel;
-
 namespace DoorRestartSystem
 {
+
+    using System.ComponentModel;
+    using Exiled.API.Interfaces;
+
     public class Config : IConfig
     {
         [Description("Enable or disable DoorRestartSystem.")]

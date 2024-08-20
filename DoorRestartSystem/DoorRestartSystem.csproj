@@ -90,8 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="DoorRestartSystem.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="Handlers\Server.cs" />
+    <Compile Include="Methods.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

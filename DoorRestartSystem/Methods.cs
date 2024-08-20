@@ -1,8 +1,6 @@
 ﻿namespace DoorRestartSystem
 {
-    using System;
     using System.Collections.Generic;
-    using System.Security.Policy;
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.API.Features.Doors;

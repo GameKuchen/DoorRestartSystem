@@ -1,7 +1,8 @@
 ﻿namespace DoorRestartSystem
 {
-
+    using System;
     using System.Collections.Generic;
+    using System.Security.Policy;
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.API.Features.Doors;
@@ -16,7 +17,7 @@
 
         private readonly List<Room> changedRooms = new List<Room>();
         private readonly List<DoorType> doorTypesToSkip = new List<DoorType>();
-
+        private readonly HashSet<ZoneType> triggeredZones = new HashSet<ZoneType>();
         public void Init()
         {
             // Always skip these doors
@@ -75,7 +76,7 @@
                 doorTypesToSkip.Add(DoorType.Scp939Cryo);
             }
 
-            // Checkpoints
+            // Armories
             if (_plugin.Config.SkipArmory)
             {
                 doorTypesToSkip.Add(DoorType.CheckpointArmoryA);
@@ -97,126 +98,51 @@
                 doorTypesToSkip.Add(DoorType.CheckpointEzHczA);
 
             }
+
+            // Gate
+            if (_plugin.Config.skipCheckpointsGate)
+            {
+                doorTypesToSkip.Add(DoorType.CheckpointGate);
+            }
         }
 
         public void Clean()
         {
             changedRooms.Clear();
             doorTypesToSkip.Clear();
+            triggeredZones.Clear();
         }
 
         public IEnumerator<float> StartLockdownRoutine()
         {
+
+            yield return Timing.WaitForSeconds(_plugin.Config.InitialDelay);
             for (; ; )
             {
+                yield return Timing.WaitForSeconds(Loader.Random.Next(_plugin.Config.DelayMin, _plugin.Config.DelayMax));
                 yield return Timing.WaitUntilTrue(() => !(Warhead.IsDetonated || Warhead.IsInProgress));
 
-                TriggerInitialCassieMessage();
+                SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart, true);
                 yield return Timing.WaitForSeconds(_plugin.Config.TimeBetweenSentenceAndStart);
 
                 float lockdownDuration = GetLockdownDuration();
-                ApplyRoomLockdowns(lockdownDuration);
-
+                _plugin.Server.Coroutines.Add(Timing.RunCoroutine(HandleLockdownOutcome(lockdownDuration)));
                 if (_plugin.Config.Flicker)
                 {
                     float flickerDuration = lockdownDuration / _plugin.Config.FlickerFrequency;
                     _plugin.Server.Coroutines.Add(Timing.RunCoroutine(FlickeringLights(flickerDuration, lockdownDuration)));
                 }
-                _plugin.Server.Coroutines.Add(Timing.RunCoroutine(HandleLockdownOutcome(lockdownDuration)));
-
-
-                yield return Timing.WaitForSeconds(Loader.Random.Next(_plugin.Config.DelayMin, _plugin.Config.DelayMax));
+                
             }
-        }
-
-        private void TriggerInitialCassieMessage()
-        {
-            Cassie.GlitchyMessage(_plugin.Config.CassieMessageStart, _plugin.Config.GlitchChance / 100f, _plugin.Config.JamChance / 100f);
-        }
-
-        private float GetLockdownDuration()
-        {
-            return (float)Loader.Random.NextDouble() * (_plugin.Config.DurationMax - _plugin.Config.DurationMin) + _plugin.Config.DurationMin;
-        }
-
-        private void ApplyRoomLockdowns(float lockdownDuration)
-        {
-            bool isHeavy = IsRoomTypeTriggered(_plugin.Config.ChanceHeavy, _plugin.Config.UsePerRoomChances);
-            bool isLight = IsRoomTypeTriggered(_plugin.Config.ChanceLight, _plugin.Config.UsePerRoomChances);
-            bool isEntrance = IsRoomTypeTriggered(_plugin.Config.ChanceEntrance, _plugin.Config.UsePerRoomChances);
-            bool isSurface = IsRoomTypeTriggered(_plugin.Config.ChanceSurface, _plugin.Config.UsePerRoomChances);
-            bool isOther = IsRoomTypeTriggered(_plugin.Config.ChanceOther, _plugin.Config.UsePerRoomChances);
-
-            if (_plugin.Config.skipCheckpointsGate)
-            {
-                doorTypesToSkip.Add(DoorType.CheckpointGate);
-            }
-
-            foreach (Room room in Room.List)
-            {
-                if (ApplyLockdownToRoom(room, lockdownDuration, isHeavy, isLight, isEntrance, isSurface, isOther))
-                {
-                    changedRooms.Add(room);
-                }
-            }
-        }
-
-        private bool ApplyLockdownToRoom(Room room, float lockdownDuration, bool isHeavy, bool isLight, bool isEntrance, bool isSurface, bool isOther)
-        {
-            if (IsRoomInZone(room, "Hcz", isHeavy, _plugin.Config.CassieMessageHeavy)) return true;
-            if (IsRoomInZone(room, "Lcz", isLight, _plugin.Config.CassieMessageLight)) return true;
-            if (IsRoomInZone(room, "Ez", isEntrance, _plugin.Config.CassieMessageEntrance)) return true;
-            if (IsRoomInZone(room, "Surface", isSurface, _plugin.Config.CassieMessageSurface)) return true;
-
-            if ((!_plugin.Config.UsePerRoomChances && isOther) || (_plugin.Config.UsePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < _plugin.Config.ChanceOther))
-            {
-                LockdownRoom(room, lockdownDuration, _plugin.Config.CassieMessageOther);
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool IsRoomInZone(Room room, string zoneType, bool isZoneTriggered, string cassieMessage)
-        {
-            if (room.Type.ToString().Contains(zoneType))
-            {
-                if (isZoneTriggered)
-                {
-                    LockdownRoom(room, GetLockdownDuration(), cassieMessage);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private void LockdownRoom(Room room, float duration, string cassieMessage)
-        {
-            room.Color = new UnityEngine.Color(_plugin.Config.LightsColorR, _plugin.Config.LightsColorG, _plugin.Config.LightsColorB);
-            foreach (Door door in room.Doors)
-            {
-                if (!doorTypesToSkip.Contains(door.Type))
-                {
-                    if (_plugin.Config.CloseDoors) door.IsOpen = false;
-                    if (!door.IsLocked) door.Lock(duration, DoorLockType.Isolation);
-                }
-            }
-
-            Cassie.Message(cassieMessage, false, false);
-        }
-
-        private bool IsRoomTypeTriggered(float chance, bool usePerRoomChances)
-        {
-            return (!usePerRoomChances && (Loader.Random.NextDouble() * 100) < chance) || (usePerRoomChances && ((float)Loader.Random.NextDouble() * 100) < chance);
         }
 
         private IEnumerator<float> HandleLockdownOutcome(float lockdownDuration)
         {
+            ApplyRoomLockdowns(lockdownDuration);
             if (changedRooms.Count > 0)
             {
                 yield return Timing.WaitForSeconds(lockdownDuration);
-                Cassie.Message(_plugin.Config.CassieMessageEnd, false, false);
+                SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageEnd);
                 ResetRoomColors();
                 yield return Timing.WaitForSeconds(8.0f);
             }
@@ -224,23 +150,201 @@
             {
                 ApplyFacilityWideLockdown(lockdownDuration);
                 yield return Timing.WaitForSeconds(lockdownDuration);
-                Cassie.Message(_plugin.Config.CassieMessageEnd, false, false);
+                SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageEnd);
                 ResetRoomColors();
                 yield return Timing.WaitForSeconds(8.0f);
             }
             else
             {
-                Cassie.Message(_plugin.Config.CassieMessageWrong, false, false);
+                SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageWrong);
             }
 
             changedRooms.Clear();
+            triggeredZones.Clear();
+        }
+        private IEnumerator<float> FlickeringLights(float flickerDuration, float totalDuration)
+        {
+            float elapsedTime = 0f;
+
+            while (elapsedTime < totalDuration)
+            {
+                yield return Timing.WaitForSeconds(flickerDuration / 3);
+
+                foreach (Room room in changedRooms)
+                {
+                    if (!room.AreLightsOff)
+                    {
+                        room.TurnOffLights(flickerDuration / 3);
+                    }
+                }
+
+                yield return Timing.WaitForSeconds(flickerDuration / 3);
+
+                elapsedTime += flickerDuration;
+            }
+        }
+
+        private void ApplyRoomLockdowns(float lockdownDuration)
+        {
+            bool isLockdownPerRoom = IsLockdownPerRoom();
+
+            if (isLockdownPerRoom)
+            {
+                foreach (Room room in Room.List)
+                {
+                    if (ApplyLockdownToRoom(room, lockdownDuration, IsTriggered(_plugin.Config.ChanceHeavy), IsTriggered(_plugin.Config.ChanceLight), IsTriggered(_plugin.Config.ChanceEntrance), IsTriggered(_plugin.Config.ChanceSurface), IsTriggered(_plugin.Config.ChanceOther), isLockdownPerRoom))
+                    {
+                        changedRooms.Add(room);
+                    }
+                }
+            }
+            else
+            {
+                bool isHeavy = IsTriggered(_plugin.Config.ChanceHeavy);
+                bool isLight = IsTriggered(_plugin.Config.ChanceLight);
+                bool isEntrance = IsTriggered(_plugin.Config.ChanceEntrance);
+                bool isSurface = IsTriggered(_plugin.Config.ChanceSurface);
+                bool isOther = IsTriggered(_plugin.Config.ChanceOther);
+
+                foreach (Room room in Room.List)
+                {
+                    if (ApplyLockdownToRoom(room, lockdownDuration, isHeavy, isLight, isEntrance, isSurface, isOther, isLockdownPerRoom))
+                    {
+                        changedRooms.Add(room);
+                    }
+                }
+            }
+
+        }
+
+        private bool ApplyLockdownToRoom(Room room, float lockdownDuration, bool isHeavy, bool isLight, bool isEntrance, bool isSurface, bool isOther, bool isLockdownPerRoom)
+        {
+            string roomType = room.Type.ToString();
+            bool muteMessage = true;
+            string cassieMessage = string.Empty;
+            bool shouldLockdown = false;
+
+
+            switch (room.Zone)
+            {
+                case ZoneType zone when zone.Equals(ZoneType.HeavyContainment) && isHeavy:
+                    shouldLockdown = true;
+                    if (!triggeredZones.Contains(ZoneType.HeavyContainment))
+                    {
+                        cassieMessage = _plugin.Config.CassieMessageHeavy;
+                        muteMessage = false;
+                        triggeredZones.Add(ZoneType.HeavyContainment);
+                    }
+                    break;
+
+                case ZoneType zone when zone.Equals(ZoneType.LightContainment) && isLight:
+                    shouldLockdown = true;
+                    if (!triggeredZones.Contains(ZoneType.LightContainment))
+                    {
+                        cassieMessage = _plugin.Config.CassieMessageLight;
+                        muteMessage = false;
+                        triggeredZones.Add(ZoneType.LightContainment);
+                    }
+                    break;
+
+                case ZoneType zone when zone.Equals(ZoneType.Entrance) && isEntrance:
+                    shouldLockdown = true;
+                    if (!triggeredZones.Contains(ZoneType.Entrance))
+                    {
+                        cassieMessage = _plugin.Config.CassieMessageEntrance;
+                        muteMessage = false;
+                        triggeredZones.Add(ZoneType.Entrance);
+                    }
+                    break;
+
+                case ZoneType zone when zone.Equals(ZoneType.Surface) && isSurface:
+                    shouldLockdown = true;
+                    if (!triggeredZones.Contains(ZoneType.Surface))
+                    {
+                        cassieMessage = _plugin.Config.CassieMessageSurface;
+                        muteMessage = false;
+                        triggeredZones.Add(ZoneType.Surface);
+                    }
+                    break;
+
+                case ZoneType zone when (zone.Equals(ZoneType.Other) || zone.Equals(ZoneType.Unspecified)) && isOther:
+                    shouldLockdown = true;
+                    if (!triggeredZones.Contains(ZoneType.Other))
+                    {
+                        cassieMessage = _plugin.Config.CassieMessageOther;
+                        muteMessage = false;
+                        triggeredZones.Add(ZoneType.Other);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (shouldLockdown)
+            {
+                LockdownRoom(room, lockdownDuration, muteMessage, cassieMessage);
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsLockdownPerRoom()
+        {
+            return _plugin.Config.UsePerRoomChances;
+        }
+
+        private void LockdownRoom(Room room, float duration, bool isSilent = true ,string cassieMessage = "")
+        {
+            room.Color = new Color(_plugin.Config.LightsColorR, _plugin.Config.LightsColorG, _plugin.Config.LightsColorB);
+            foreach (Door door in room.Doors)
+            {
+                if (!doorTypesToSkip.Contains(door.Type))
+                {
+                    if (_plugin.Config.CloseDoors)
+                    {
+                        door.IsOpen = false;
+                        door.PlaySound(DoorBeepType.PermissionDenied);
+                    }
+                    if (!door.IsLocked)
+                    {
+                        door.Lock(duration, DoorLockType.Isolation);
+                        door.PlaySound(DoorBeepType.LockBypassDenied);
+                    }
+                }
+            }
+
+            if (!isSilent) SendDoorRestartSystemCassieMessage(cassieMessage);
+        }
+
+        private bool IsTriggered(float chance)
+        {
+            return (Loader.Random.NextDouble() * 100) < chance;
+        }
+
+        private void SendDoorRestartSystemCassieMessage(string cassieMessage, bool isGlitchy = false)
+        {
+            if (isGlitchy)
+            {
+                Cassie.GlitchyMessage(cassieMessage, _plugin.Config.GlitchChance / 100f, _plugin.Config.JamChance / 100f);
+            }
+            else
+            {
+               Cassie.Message(cassieMessage, false, false, false);
+            }
+        }
+
+        private float GetLockdownDuration()
+        {
+            return (float)Loader.Random.NextDouble() * (_plugin.Config.DurationMax - _plugin.Config.DurationMin) + _plugin.Config.DurationMin;
         }
 
         private void ApplyFacilityWideLockdown(float duration)
         {
             foreach (Room room in Room.List)
             {
-                LockdownRoom(room, duration, _plugin.Config.CassieMessageFacility);
+                LockdownRoom(room, duration, false, _plugin.Config.CassieMessageFacility);
             }
         }
 
@@ -252,27 +356,7 @@
             }
         }
 
-        private IEnumerator<float> FlickeringLights(float flickerDuration, float totalDuration)
-        {
-            float elapsedTime = 0f;
 
-            while (elapsedTime < totalDuration)
-            {
-                foreach (Room room in changedRooms)
-                {
-                    if (!room.AreLightsOff)
-                    {
-                        room.TurnOffLights(flickerDuration / 2);
-                    }
-                }
-
-                yield return Timing.WaitForSeconds(flickerDuration / 2);
-
-                elapsedTime += flickerDuration;
-            }
-
-            _plugin.Server.Coroutines.Add(Timing.RunCoroutine(HandleLockdownOutcome(totalDuration)));
-        }
 
 
     }

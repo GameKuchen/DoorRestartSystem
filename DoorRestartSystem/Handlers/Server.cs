@@ -14,7 +14,7 @@ namespace DoorRestartSystem.Handlers
 
         public void OnRoundStarted()
         {
-            if (UnityEngine.Random.Range(0, 100) < _plugin.Config.Spawnchance)
+            if (UnityEngine.Random.Range(0, 100) <= _plugin.Config.Spawnchance)
             {
                 _plugin.Methods.Init();
                 Coroutines.Add(Timing.RunCoroutine(_plugin.Methods.StartLockdownRoutine()));

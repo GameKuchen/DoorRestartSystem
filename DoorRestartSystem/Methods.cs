@@ -218,8 +218,6 @@
 
         private bool ApplyLockdownToRoom(Room room, float lockdownDuration, bool isHeavy, bool isLight, bool isEntrance, bool isSurface, bool isOther, bool isLockdownPerRoom)
         {
-            string roomType = room.Type.ToString();
-            bool muteMessage = true;
             string cassieMessage = string.Empty;
             bool shouldLockdown = false;
 
@@ -231,7 +229,6 @@
                     if (!triggeredZones.Contains(ZoneType.HeavyContainment))
                     {
                         cassieMessage = _plugin.Config.CassieMessageHeavy;
-                        muteMessage = false;
                         triggeredZones.Add(ZoneType.HeavyContainment);
                     }
                     break;
@@ -241,7 +238,6 @@
                     if (!triggeredZones.Contains(ZoneType.LightContainment))
                     {
                         cassieMessage = _plugin.Config.CassieMessageLight;
-                        muteMessage = false;
                         triggeredZones.Add(ZoneType.LightContainment);
                     }
                     break;
@@ -251,7 +247,6 @@
                     if (!triggeredZones.Contains(ZoneType.Entrance))
                     {
                         cassieMessage = _plugin.Config.CassieMessageEntrance;
-                        muteMessage = false;
                         triggeredZones.Add(ZoneType.Entrance);
                     }
                     break;
@@ -261,7 +256,6 @@
                     if (!triggeredZones.Contains(ZoneType.Surface))
                     {
                         cassieMessage = _plugin.Config.CassieMessageSurface;
-                        muteMessage = false;
                         triggeredZones.Add(ZoneType.Surface);
                     }
                     break;
@@ -271,7 +265,6 @@
                     if (!triggeredZones.Contains(ZoneType.Other))
                     {
                         cassieMessage = _plugin.Config.CassieMessageOther;
-                        muteMessage = false;
                         triggeredZones.Add(ZoneType.Other);
                     }
                     break;
@@ -282,7 +275,7 @@
 
             if (shouldLockdown)
             {
-                LockdownRoom(room, lockdownDuration, muteMessage, cassieMessage);
+                LockdownRoom(room, lockdownDuration, cassieMessage);
                 return true;
             }
 
@@ -294,7 +287,7 @@
             return _plugin.Config.UsePerRoomChances;
         }
 
-        private void LockdownRoom(Room room, float duration, bool isSilent = true ,string cassieMessage = "")
+        private void LockdownRoom(Room room, float duration,string cassieMessage = "")
         {
             room.Color = new Color(_plugin.Config.LightsColorR, _plugin.Config.LightsColorG, _plugin.Config.LightsColorB);
             foreach (Door door in room.Doors)
@@ -313,8 +306,8 @@
                     }
                 }
             }
-
-            if (!isSilent) SendDoorRestartSystemCassieMessage(cassieMessage);
+            
+           SendDoorRestartSystemCassieMessage(cassieMessage);
         }
 
         private bool IsTriggered(float chance)
@@ -324,6 +317,7 @@
 
         private void SendDoorRestartSystemCassieMessage(string cassieMessage, bool isGlitchy = false)
         {
+            if (!(cassieMessage.Length > 0)) return;
             if (isGlitchy)
             {
                 Cassie.GlitchyMessage(cassieMessage, _plugin.Config.GlitchChance / 100f, _plugin.Config.JamChance / 100f);
@@ -343,7 +337,7 @@
         {
             foreach (Room room in Room.List)
             {
-                LockdownRoom(room, duration, false, _plugin.Config.CassieMessageFacility);
+                LockdownRoom(room, duration, _plugin.Config.CassieMessageFacility);
             }
         }
 

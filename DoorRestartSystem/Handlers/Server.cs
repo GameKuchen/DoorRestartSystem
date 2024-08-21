@@ -22,7 +22,6 @@ namespace DoorRestartSystem.Handlers
             }
         }
 
-
         public void OnWaitingForPlayers()
         {
             _plugin.Methods.Clean();

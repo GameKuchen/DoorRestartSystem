@@ -121,6 +121,7 @@
                 yield return Timing.WaitForSeconds(Loader.Random.Next(_plugin.Config.DelayMin, _plugin.Config.DelayMax));
                 yield return Timing.WaitUntilTrue(() => !(Warhead.IsDetonated || Warhead.IsInProgress));
 
+                Cassie.Clear();
                 SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart, true);
                 yield return Timing.WaitForSeconds(_plugin.Config.TimeBetweenSentenceAndStart);
 

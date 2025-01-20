@@ -15,7 +15,7 @@ namespace DoorRestartSystem
         public override string Author => "GameKuchen & iomatix";
         public override string Name => "DoorRestartSystem";
         public override string Prefix => "DRS";
-        public override Version Version => new Version(6, 1, 0);
+        public override Version Version => new Version(4, 2, 0);
         public override Version RequiredExiledVersion => new Version(9, 0, 0);
         private Server _server;
         public override PluginPriority Priority => PluginPriority.Medium;

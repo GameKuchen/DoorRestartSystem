@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.API.Features.Doors;
 using MEC;
 using Server = DoorRestartSystem.Handlers.Server;
 
@@ -10,7 +11,7 @@ namespace DoorRestartSystem
 
     public class DoorRestartSystemNew : Plugin<Config>
     {
-        public override string Author => "GameKuchen";
+        public override string Author => "GameKuchen, iomatix";
         public override string Name => "DoorRestartSystem";
         public override string Prefix => "DRS";
         public override Version Version => new Version(3, 7, 0);

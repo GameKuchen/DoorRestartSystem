@@ -71,7 +71,7 @@
                 doorTypesToSkip.Add(DoorType.Scp330Chamber);
                 doorTypesToSkip.Add(DoorType.Scp914Gate);
                 doorTypesToSkip.Add(DoorType.Scp914Door);
-                doorTypesToSkip.Add(DoorType.Scp939Cryo);
+                doorTypesToSkip.Add(DoorType.Scp939Cryo);      
             }
 
             // Armories
@@ -94,13 +94,13 @@
                 doorTypesToSkip.Add(DoorType.CheckpointLczB);
                 doorTypesToSkip.Add(DoorType.CheckpointEzHczB);
                 doorTypesToSkip.Add(DoorType.CheckpointEzHczA);
-
             }
 
             // Gate
             if (_plugin.Config.skipCheckpointsGate)
             {
-                doorTypesToSkip.Add(DoorType.CheckpointGate);
+                doorTypesToSkip.Add(DoorType.CheckpointGateA);
+                doorTypesToSkip.Add(DoorType.CheckpointGateB);
             }
         }
 

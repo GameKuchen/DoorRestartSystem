@@ -1,11 +1,11 @@
 ﻿namespace DoorRestartSystem
 {
-    using System.Collections.Generic;
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.API.Features.Doors;
     using Exiled.Loader;
     using MEC;
+    using System.Collections.Generic;
     using UnityEngine;
 
     public class Methods
@@ -132,7 +132,7 @@
                     float flickerDuration = lockdownDuration / _plugin.Config.FlickerFrequency;
                     _plugin.Server.Coroutines.Add(Timing.RunCoroutine(FlickeringLights(flickerDuration, lockdownDuration)));
                 }
-                
+
             }
         }
 
@@ -288,7 +288,7 @@
             return _plugin.Config.UsePerRoomChances;
         }
 
-        private void LockdownRoom(Room room, float duration,string cassieMessage = "")
+        private void LockdownRoom(Room room, float duration, string cassieMessage = "")
         {
             room.Color = new Color(_plugin.Config.LightsColorR, _plugin.Config.LightsColorG, _plugin.Config.LightsColorB);
             foreach (Door door in room.Doors)
@@ -307,8 +307,8 @@
                     }
                 }
             }
-            
-           SendDoorRestartSystemCassieMessage(cassieMessage);
+
+            SendDoorRestartSystemCassieMessage(cassieMessage);
         }
 
         private bool IsTriggered(float chance)
@@ -325,7 +325,7 @@
             }
             else
             {
-               Cassie.Message(cassieMessage, false, false, false);
+                Cassie.Message(cassieMessage, false, false, false);
             }
         }
 

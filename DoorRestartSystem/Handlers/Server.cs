@@ -1,9 +1,9 @@
 namespace DoorRestartSystem.Handlers
 {
 
-    using System.Collections.Generic;
     using Exiled.Events.EventArgs.Server;
     using MEC;
+    using System.Collections.Generic;
 
     internal sealed class Server
     {
@@ -18,7 +18,7 @@ namespace DoorRestartSystem.Handlers
             {
                 _plugin.Methods.Init();
                 Coroutines.Add(Timing.RunCoroutine(_plugin.Methods.StartLockdownRoutine()));
-                
+
             }
         }
 

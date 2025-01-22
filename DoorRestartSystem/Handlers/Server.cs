@@ -1,9 +1,9 @@
 namespace DoorRestartSystem.Handlers
 {
-
+    using System.Collections.Generic;
     using Exiled.Events.EventArgs.Server;
     using MEC;
-    using System.Collections.Generic;
+    
 
     internal sealed class Server
     {

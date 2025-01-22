@@ -1,8 +1,8 @@
 namespace DoorRestartSystem
 {
+    using System;
     using Exiled.API.Enums;
     using Exiled.API.Features;
-    using System;
     using Server = DoorRestartSystem.Handlers.Server;
 
 

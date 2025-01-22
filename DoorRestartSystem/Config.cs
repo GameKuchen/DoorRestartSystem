@@ -1,8 +1,8 @@
 namespace DoorRestartSystem
 {
-
-    using Exiled.API.Interfaces;
     using System.ComponentModel;
+    using Exiled.API.Interfaces;
+
 
     public class Config : IConfig
     {

@@ -1,11 +1,11 @@
 ﻿namespace DoorRestartSystem
 {
+    using System.Collections.Generic;
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.API.Features.Doors;
     using Exiled.Loader;
     using MEC;
-    using System.Collections.Generic;
     using UnityEngine;
 
     public class Methods

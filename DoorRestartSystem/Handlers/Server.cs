@@ -1,27 +1,40 @@
-using Exiled.Events.EventArgs.Server;
-using MEC;
-
 namespace DoorRestartSystem.Handlers
 {
+
+    using System.Collections.Generic;
+    using Exiled.Events.EventArgs.Server;
+    using MEC;
+
     internal sealed class Server
     {
-        private readonly DoorRestartSystemNew _plugin;
-        public Server(DoorRestartSystemNew plugin) => _plugin = plugin;
-        public CoroutineHandle Coroutine;
+        private readonly Plugin _plugin;
+        public Server(Plugin plugin) => _plugin = plugin;
+
+        public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
 
         public void OnRoundStarted()
         {
-            Timing.KillCoroutines(Coroutine);
-            
-            if (UnityEngine.Random.Range(0, 100) < _plugin.Config.Spawnchance)
-                Coroutine = Timing.RunCoroutine(_plugin.RunBlackoutTimer());
+            if (UnityEngine.Random.Range(0, 100) <= _plugin.Config.Spawnchance)
+            {
+                _plugin.Methods.Init();
+                Coroutines.Add(Timing.RunCoroutine(_plugin.Methods.StartLockdownRoutine()));
+
+            }
         }
-        
 
         public void OnWaitingForPlayers()
-            => Timing.KillCoroutines(Coroutine);
+        {
+            _plugin.Methods.Clean();
+            foreach (CoroutineHandle handle in Coroutines) Timing.KillCoroutines(handle);
+            Coroutines.Clear();
+
+        }
 
         public void OnRoundEnded(RoundEndedEventArgs ev)
-            => Timing.KillCoroutines(Coroutine);
+        {
+            _plugin.Methods.Clean();
+            foreach (CoroutineHandle handle in Coroutines) Timing.KillCoroutines(handle);
+            Coroutines.Clear();
+        }
     }
 }

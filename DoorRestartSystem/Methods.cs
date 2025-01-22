@@ -94,13 +94,13 @@
                 doorTypesToSkip.Add(DoorType.CheckpointLczB);
                 doorTypesToSkip.Add(DoorType.CheckpointEzHczB);
                 doorTypesToSkip.Add(DoorType.CheckpointEzHczA);
-
             }
 
             // Gate
             if (_plugin.Config.skipCheckpointsGate)
             {
-                doorTypesToSkip.Add(DoorType.CheckpointGate);
+                doorTypesToSkip.Add(DoorType.CheckpointGateA);
+                doorTypesToSkip.Add(DoorType.CheckpointGateB);
             }
         }
 
@@ -132,7 +132,7 @@
                     float flickerDuration = lockdownDuration / _plugin.Config.FlickerFrequency;
                     _plugin.Server.Coroutines.Add(Timing.RunCoroutine(FlickeringLights(flickerDuration, lockdownDuration)));
                 }
-                
+
             }
         }
 
@@ -288,7 +288,7 @@
             return _plugin.Config.UsePerRoomChances;
         }
 
-        private void LockdownRoom(Room room, float duration,string cassieMessage = "")
+        private void LockdownRoom(Room room, float duration, string cassieMessage = "")
         {
             room.Color = new Color(_plugin.Config.LightsColorR, _plugin.Config.LightsColorG, _plugin.Config.LightsColorB);
             foreach (Door door in room.Doors)
@@ -307,8 +307,8 @@
                     }
                 }
             }
-            
-           SendDoorRestartSystemCassieMessage(cassieMessage);
+
+            SendDoorRestartSystemCassieMessage(cassieMessage);
         }
 
         private bool IsTriggered(float chance)
@@ -325,7 +325,7 @@
             }
             else
             {
-               Cassie.Message(cassieMessage, false, false, false);
+                Cassie.Message(cassieMessage, false, false, false);
             }
         }
 

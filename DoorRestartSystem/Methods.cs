@@ -71,7 +71,7 @@
                 doorTypesToSkip.Add(DoorType.Scp330Chamber);
                 doorTypesToSkip.Add(DoorType.Scp914Gate);
                 doorTypesToSkip.Add(DoorType.Scp914Door);
-                doorTypesToSkip.Add(DoorType.Scp939Cryo);
+                doorTypesToSkip.Add(DoorType.Scp939Cryo);      
             }
 
             // Armories

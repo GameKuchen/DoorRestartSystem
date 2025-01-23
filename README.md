@@ -1,11 +1,12 @@
-## Door-Restart-System 4.3
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/gamekuchen/DoorRestartSystem/v4.3.0/total?style=for-the-badge)
+## Door-Restart-System 6.3.1
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/gamekuchen/DoorRestartSystem/v6.3.1/total?style=for-the-badge)
 ## Info
 This is a <SCP SL Exiled 9.0> plugin that allows for the facility to have a "Door Software Restart". 
 The plugin closes and full locks all doors for the configurated time and then unlocks them again.
 
 Rumors say that these "glitches" happen because someone spilled their coffee on the system in a rush to leave the facility.
 
+TODO - Update configs below
 ## Configs:
 ```DRS:
 # Enable or disable DoorRestartSystem.

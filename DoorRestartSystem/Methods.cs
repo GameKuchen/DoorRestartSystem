@@ -99,8 +99,7 @@
             // Gate
             if (_plugin.Config.skipCheckpointsGate)
             {
-                doorTypesToSkip.Add(DoorType.CheckpointGateA);
-                doorTypesToSkip.Add(DoorType.CheckpointGateB);
+                doorTypesToSkip.Add(DoorType.CheckpointGate);
             }
         }
 

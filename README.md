@@ -1,12 +1,39 @@
 ## Door-Restart-System 6.3.1
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/gamekuchen/DoorRestartSystem/v6.3.1/total?style=for-the-badge)
-## Info
-This is a <SCP SL Exiled 9.0> plugin that allows for the facility to have a "Door Software Restart". 
-The plugin closes and full locks all doors for the configurated time and then unlocks them again.
 
-Rumors say that these "glitches" happen because someone spilled their coffee on the system in a rush to leave the facility.
+## Plugin Description: DoorRestartSystem
 
-TODO - Update configs below
+**Compatible with:** SCP: SL Exiled 9.0+
+
+The **DoorRestartSystem** plugin introduces an immersive feature where the facility undergoes a "Door Software Restart." During this event, all affected doors are fully closed and locked for a configurable duration, simulating a temporary system-wide malfunction. Once the restart process completes, doors unlock and return to normal operation.
+
+Rumor has it that these malfunctions might be the result of someone spilling their coffee on the door control system while scrambling to evacuate the facility.
+
+### Key Features:
+
+-   **Configurable Settings:**
+    
+    -   Enable or disable the system entirely.
+        
+    -   Adjust the probability, duration, and delay of restarts.
+        
+    -   Fine-tune which zones or door types are impacted.
+        
+-   **Advanced Lockdown Customization:**
+    
+    -   Control whether specific areas, such as SCP rooms, checkpoints, airlocks, elevators, or armory doors, are affected.
+        
+    -   Individual zone-based or per-room chances allow tailored experiences for each playthrough.
+        
+-   **Enhanced Immersion:**
+    
+    -   Dynamic lighting effects with customizable flicker frequency and colors during lockdowns.
+        
+    -   Integrated CASSIE announcements, including startup and ending messages, with optional glitching or jamming effects.
+        
+-   **Debugging and Performance:**
+    
+    -   Debugging options to monitor and test the system during development or server setup.
 
 ## Configs:
 ```

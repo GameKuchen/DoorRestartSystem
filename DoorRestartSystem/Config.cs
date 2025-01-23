@@ -1,8 +1,9 @@
-using Exiled.API.Interfaces;
-using System.ComponentModel;
-
 namespace DoorRestartSystem
 {
+    using System.ComponentModel;
+    using Exiled.API.Interfaces;
+
+
     public class Config : IConfig
     {
         [Description("Enable or disable DoorRestartSystem.")]
@@ -60,7 +61,7 @@ namespace DoorRestartSystem
         [Description("Enable lighting flicker")]
         public bool Flicker { get; set; } = true;
 
-        [Description("Flickering Speed in seconds")]
+        [Description("Flickering frequency. Higher the value faster the flickering.")]
         public float FlickerFrequency { get; set; } = 2.5f;
 
         [Description("Red channel of the lights color in the room during lockdown")]
@@ -105,7 +106,7 @@ namespace DoorRestartSystem
         [Description("Message said by Cassie after CassiePostMessage if outage gonna occur at the entrance zone.")]
         public string CassieMessageSurface { get; set; } = "The Surface .";
 
-        [Description("Message said by Cassie after CassiePostMessage if outage gonna occur at random rooms in facility when UseRoomChances is true or unknown type of zones or unspecified zones.")]
+        [Description("Message said by Cassie after CassiePostMessage if outage gonna occur at random rooms in facility when zone is unknown or unspecified.")]
         public string CassieMessageOther { get; set; } = ". pitch_0.35 .g6 pitch_0.95 the malfunction is Unspecified .";
 
         [Description("The sound CASSIE will make during a lockdown.")]

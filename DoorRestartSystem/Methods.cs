@@ -140,10 +140,10 @@
 
         private IEnumerator<float> HandleLockdownOutcome(float lockdownDuration)
         {
+            SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart);
             ApplyRoomLockdowns(lockdownDuration);
             if (changedRooms.Count > 0)
             {
-                SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart);
                 yield return Timing.WaitForSeconds(lockdownDuration);
                 SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageEnd);
                 ResetRoomColors();
@@ -151,7 +151,6 @@
             }
             else if (_plugin.Config.EnableFacilityLockdown)
             {
-                SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart);
                 ApplyFacilityWideLockdown(lockdownDuration);
                 yield return Timing.WaitForSeconds(lockdownDuration);
                 SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageEnd);

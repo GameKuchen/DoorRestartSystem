@@ -54,9 +54,6 @@ namespace DoorRestartSystem
         [Description("The chance that a Round even has DoorSystemRestarts")]
         public float Spawnchance { get; set; } = 55;
 
-        [Description("Enable 3 . 2 . 1 announcement")]
-        public bool isCountdownEnabled { get; set; } = false;
-
         //Custom Flicker Lights
         [Description("Enable lighting flicker")]
         public bool Flicker { get; set; } = true;
@@ -82,10 +79,13 @@ namespace DoorRestartSystem
         [Description("Message said by Cassie if no lockdown occurs")]
         public string CassieMessageWrong { get; set; } = ". I have avoided the system failure . .g5 Sorry for a .g3 . false alert .";
 
+        [Description("Enable CassieMessageCountdown announcement")]
+        public bool IsCountdownEnabled { get; set; } = false;
+
         [Description("Message said by Cassie just before a lockdown starts - Countdown - 3 . 2 . 1 announcement")]
         public string CassieMessageCountdown { get; set; } = "pitch_0.2 .g4 . .g4 pitch_1 door control system pitch_0.25 .g1 pitch_0.9 malfunction pitch_1 . initializing repair";
 
-        [Description("The time between the sentence and the 3 . 2 . 1 announcement")]
+        [Description("The time between the CassieMessageCountdown and the CassieMessageStart.")]
         public float TimeBetweenSentenceAndStart { get; set; } = 11f;
 
         [Description("Message said by Cassie just after the lockdown.")]

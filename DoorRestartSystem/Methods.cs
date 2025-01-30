@@ -121,7 +121,7 @@
                 yield return Timing.WaitUntilTrue(() => !(Warhead.IsDetonated || Warhead.IsInProgress));
 
                 Cassie.Clear();
-                if (_plugin.Config.isCountdownEnabled)
+                if (_plugin.Config.IsCountdownEnabled)
                 {
                     SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageCountdown, true);
                     yield return Timing.WaitForSeconds(_plugin.Config.TimeBetweenSentenceAndStart);

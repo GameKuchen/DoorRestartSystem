@@ -85,7 +85,7 @@ namespace DoorRestartSystem
         [Description("Message said by Cassie just before a lockdown starts - Countdown - 3 . 2 . 1 announcement")]
         public string CassieMessageCountdown { get; set; } = "pitch_0.2 .g4 . .g4 pitch_1 door control system pitch_0.25 .g1 pitch_0.9 malfunction pitch_1 . initializing repair";
 
-        [Description("The time between the CassieMessageCountdown and the CassieMessageStart.")]
+        [Description("The delay between the CassieMessageCountdown and the CassieMessageStart if IsCountdownEnabled is enabled.")]
         public float TimeBetweenSentenceAndStart { get; set; } = 11f;
 
         [Description("Message said by Cassie just after the lockdown.")]

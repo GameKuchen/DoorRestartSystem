@@ -123,7 +123,7 @@
                 Cassie.Clear();
                 if (_plugin.Config.isCountdownEnabled)
                 {
-                    SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart, true);
+                    SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageCountdown, true);
                     yield return Timing.WaitForSeconds(_plugin.Config.TimeBetweenSentenceAndStart);
                 }
 
@@ -143,6 +143,7 @@
             ApplyRoomLockdowns(lockdownDuration);
             if (changedRooms.Count > 0)
             {
+                SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart);
                 yield return Timing.WaitForSeconds(lockdownDuration);
                 SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageEnd);
                 ResetRoomColors();
@@ -150,6 +151,7 @@
             }
             else if (_plugin.Config.EnableFacilityLockdown)
             {
+                SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart);
                 ApplyFacilityWideLockdown(lockdownDuration);
                 yield return Timing.WaitForSeconds(lockdownDuration);
                 SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageEnd);
@@ -223,8 +225,6 @@
         {
             string cassieMessage = string.Empty;
             bool shouldLockdown = false;
-
-
             switch (room.Zone)
             {
                 case ZoneType zone when zone.Equals(ZoneType.HeavyContainment) && isHeavy:

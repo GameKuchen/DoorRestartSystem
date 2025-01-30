@@ -83,13 +83,13 @@ namespace DoorRestartSystem
         public string CassieMessageWrong { get; set; } = ". I have avoided the system failure . .g5 Sorry for a .g3 . false alert .";
 
         [Description("Message said by Cassie when a lockdown starts - 3 . 2 . 1 announcement")]
-        public string CassieMessageStart { get; set; } = "pitch_0.2 .g4 . .g4 pitch_1 door control system pitch_0.25 .g1 pitch_0.9 malfunction pitch_1 . initializing repair";
+        public string CassieMessageCountdown { get; set; } = "pitch_0.2 .g4 . .g4 pitch_1 door control system pitch_0.25 .g1 pitch_0.9 malfunction pitch_1 . initializing repair";
 
         [Description("The time between the sentence and the 3 . 2 . 1 announcement")]
         public float TimeBetweenSentenceAndStart { get; set; } = 11f;
 
         [Description("Message said by Cassie just after the lockdown.")]
-        public string CassiePostMessage { get; set; } = "door control system malfunction has been detected at .";
+        public string CassieMessageStart { get; set; } = "door control system malfunction has been detected at .";
 
         [Description("Message said by Cassie after CassiePostMessage if lockdown gonna occur at whole site.")]
         public string CassieMessageFacility { get; set; } = "The Facility .";

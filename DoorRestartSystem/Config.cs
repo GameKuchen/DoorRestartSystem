@@ -55,7 +55,7 @@ namespace DoorRestartSystem
         public float Spawnchance { get; set; } = 55;
 
         [Description("Enable 3 . 2 . 1 announcement")]
-        public bool Countdown { get; set; } = false;
+        public bool isCountdownEnabled { get; set; } = false;
 
         //Custom Flicker Lights
         [Description("Enable lighting flicker")]

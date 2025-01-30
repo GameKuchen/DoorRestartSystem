@@ -121,8 +121,11 @@
                 yield return Timing.WaitUntilTrue(() => !(Warhead.IsDetonated || Warhead.IsInProgress));
 
                 Cassie.Clear();
-                SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart, true);
-                yield return Timing.WaitForSeconds(_plugin.Config.TimeBetweenSentenceAndStart);
+                if (_plugin.Config.isCountdownEnabled)
+                {
+                    SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart, true);
+                    yield return Timing.WaitForSeconds(_plugin.Config.TimeBetweenSentenceAndStart);
+                }
 
                 float lockdownDuration = GetLockdownDuration();
                 _plugin.Server.Coroutines.Add(Timing.RunCoroutine(HandleLockdownOutcome(lockdownDuration)));

@@ -88,7 +88,7 @@ namespace DoorRestartSystem
         [Description("The delay between the CassieMessageCountdown and the CassieMessageStart if IsCountdownEnabled is enabled.")]
         public float TimeBetweenSentenceAndStart { get; set; } = 11f;
 
-        [Description("Message said by Cassie just after the lockdown.")]
+        [Description("Message said by Cassie on the lockdown start, delayed by time set on delayTimeBetweenSentenceAndStart if the countdown is enabled.")]
         public string CassieMessageStart { get; set; } = "door control system malfunction has been detected at .";
 
         [Description("Message said by Cassie after CassiePostMessage if lockdown gonna occur at whole site.")]

@@ -10,6 +10,7 @@
     <AssemblyVersion>5.0.2</AssemblyVersion>
     <FileVersion>5.0.2</FileVersion>
     <LangVersion>9.0</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>

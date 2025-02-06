@@ -121,8 +121,11 @@
                 yield return Timing.WaitUntilTrue(() => !(Warhead.IsDetonated || Warhead.IsInProgress));
 
                 Cassie.Clear();
-                SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart, true);
-                yield return Timing.WaitForSeconds(_plugin.Config.TimeBetweenSentenceAndStart);
+                if (_plugin.Config.IsCountdownEnabled)
+                {
+                    SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageCountdown, true);
+                    yield return Timing.WaitForSeconds(_plugin.Config.TimeBetweenSentenceAndStart);
+                }
 
                 float lockdownDuration = GetLockdownDuration();
                 _plugin.Server.Coroutines.Add(Timing.RunCoroutine(HandleLockdownOutcome(lockdownDuration)));
@@ -137,6 +140,7 @@
 
         private IEnumerator<float> HandleLockdownOutcome(float lockdownDuration)
         {
+            SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageStart);
             ApplyRoomLockdowns(lockdownDuration);
             if (changedRooms.Count > 0)
             {
@@ -220,8 +224,6 @@
         {
             string cassieMessage = string.Empty;
             bool shouldLockdown = false;
-
-
             switch (room.Zone)
             {
                 case ZoneType zone when zone.Equals(ZoneType.HeavyContainment) && isHeavy:

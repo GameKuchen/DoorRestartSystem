@@ -1,11 +1,11 @@
-## Door-Restart-System 6.3.1
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/gamekuchen/DoorRestartSystem/v6.3.1/total?style=for-the-badge)
+## Door-Restart-System 6.3.3
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/gamekuchen/DoorRestartSystem/v6.3.3/total?style=for-the-badge)
 
 ## Plugin Description: DoorRestartSystem
 
 **Compatible with:** SCP: SL Exiled 9.0+
 
-The **DoorRestartSystem** plugin introduces an immersive feature where the facility undergoes a "Door Software Restart." During this event, all affected doors are fully closed and locked for a configurable duration, simulating a temporary system-wide malfunction. Once the restart process completes, doors unlock and return to normal operation.
+The **DoorRestartSystem** plugin introduces an immersive feature where the facility undergoes a "Door Software Restart." During this event, all affected doors are fully closed and locked for a configurable duration, simulating a temporary system-wide malfunction. Once the restart process is complete, doors unlock and return to normal operation.
 
 Rumor has it that these malfunctions might be the result of someone spilling their coffee on the door control system while scrambling to evacuate the facility.
 

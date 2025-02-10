@@ -277,7 +277,8 @@
 
             if (shouldLockdown)
             {
-                LockdownRoom(room, lockdownDuration, cassieMessage);
+                SendDoorRestartSystemCassieMessage(cassieMessage);
+                LockdownRoom(room, lockdownDuration);
                 return true;
             }
 
@@ -289,7 +290,7 @@
             return _plugin.Config.UsePerRoomChances;
         }
 
-        private void LockdownRoom(Room room, float duration, string cassieMessage = "")
+        private void LockdownRoom(Room room, float duration)
         {
             room.Color = new Color(_plugin.Config.LightsColorR, _plugin.Config.LightsColorG, _plugin.Config.LightsColorB);
             foreach (Door door in room.Doors)
@@ -308,8 +309,6 @@
                     }
                 }
             }
-
-            SendDoorRestartSystemCassieMessage(cassieMessage);
         }
 
         private bool IsTriggered(float chance)
@@ -337,9 +336,10 @@
 
         private void ApplyFacilityWideLockdown(float duration)
         {
+            SendDoorRestartSystemCassieMessage(_plugin.Config.CassieMessageFacility);
             foreach (Room room in Room.List)
             {
-                LockdownRoom(room, duration, _plugin.Config.CassieMessageFacility);
+                LockdownRoom(room, duration);
             }
         }
 

@@ -13,8 +13,8 @@
         private readonly Plugin _plugin;
         public Methods(Plugin plugin) => _plugin = plugin;
 
-        private readonly List<Room> changedRooms = new List<Room>();
-        private readonly List<DoorType> doorTypesToSkip = new List<DoorType>();
+        private readonly HashSet<Room> changedRooms = new HashSet<Room>();
+        private readonly HashSet<DoorType> doorTypesToSkip = new HashSet<DoorType>();
         private readonly HashSet<ZoneType> triggeredZones = new HashSet<ZoneType>();
         public void Init()
         {
@@ -71,7 +71,7 @@
                 doorTypesToSkip.Add(DoorType.Scp330Chamber);
                 doorTypesToSkip.Add(DoorType.Scp914Gate);
                 doorTypesToSkip.Add(DoorType.Scp914Door);
-                doorTypesToSkip.Add(DoorType.Scp939Cryo);      
+                doorTypesToSkip.Add(DoorType.Scp939Cryo);
             }
 
             // Armories
@@ -128,11 +128,10 @@
                 }
 
                 float lockdownDuration = GetLockdownDuration();
-                _plugin.Server.Coroutines.Add(Timing.RunCoroutine(HandleLockdownOutcome(lockdownDuration)));
+                _plugin.Server.Coroutines.Add(Timing.RunCoroutine(HandleLockdownOutcome(lockdownDuration), "LockdownRoutine"));
                 if (_plugin.Config.Flicker)
                 {
-                    float flickerDuration = lockdownDuration / _plugin.Config.FlickerFrequency;
-                    _plugin.Server.Coroutines.Add(Timing.RunCoroutine(FlickeringLights(flickerDuration, lockdownDuration)));
+                    _plugin.Server.Coroutines.Add(Timing.RunCoroutine(FlickeringLights(lockdownDuration), "LockdownFlicker"));
                 }
 
             }
@@ -165,40 +164,44 @@
             changedRooms.Clear();
             triggeredZones.Clear();
         }
-        private IEnumerator<float> FlickeringLights(float flickerDuration, float totalDuration)
+        private IEnumerator<float> FlickeringLights(float lockdownDuration)
         {
             float elapsedTime = 0f;
+            float flickerFreq = _plugin.Config.FlickerFrequency;
+            // Each cycle consists of two half-cycles.
+            float halfCycle = lockdownDuration / (2 * flickerFreq);
 
-            while (elapsedTime < totalDuration)
+            while (elapsedTime < lockdownDuration)
             {
-                yield return Timing.WaitForSeconds(flickerDuration / 3);
+                // Wait for the first half-cycle period.
+                yield return Timing.WaitForSeconds(halfCycle);
+                elapsedTime += halfCycle;
 
+                // Turn off lights for all changed rooms.
                 foreach (Room room in changedRooms)
                 {
                     if (!room.AreLightsOff)
                     {
-                        room.TurnOffLights(flickerDuration / 3);
+                        room.TurnOffLights(halfCycle);
                     }
                 }
 
-                yield return Timing.WaitForSeconds(flickerDuration / 3);
-
-                elapsedTime += flickerDuration;
+                // Wait for the second half-cycle period.
+                yield return Timing.WaitForSeconds(halfCycle);
+                elapsedTime += halfCycle;
             }
         }
 
+
         private void ApplyRoomLockdowns(float lockdownDuration)
         {
-            bool isLockdownPerRoom = IsLockdownPerRoom();
 
-            if (isLockdownPerRoom)
+            if (IsLockdownPerRoom())
             {
                 foreach (Room room in Room.List)
                 {
-                    if (ApplyLockdownToRoom(room, lockdownDuration, IsTriggered(_plugin.Config.ChanceHeavy), IsTriggered(_plugin.Config.ChanceLight), IsTriggered(_plugin.Config.ChanceEntrance), IsTriggered(_plugin.Config.ChanceSurface), IsTriggered(_plugin.Config.ChanceOther), isLockdownPerRoom))
-                    {
-                        changedRooms.Add(room);
-                    }
+                    TryApplyLockdownToRoom(room, lockdownDuration, IsTriggered(_plugin.Config.ChanceHeavy), IsTriggered(_plugin.Config.ChanceLight), IsTriggered(_plugin.Config.ChanceEntrance), IsTriggered(_plugin.Config.ChanceSurface), IsTriggered(_plugin.Config.ChanceOther));
+
                 }
             }
             else
@@ -211,16 +214,13 @@
 
                 foreach (Room room in Room.List)
                 {
-                    if (ApplyLockdownToRoom(room, lockdownDuration, isHeavy, isLight, isEntrance, isSurface, isOther, isLockdownPerRoom))
-                    {
-                        changedRooms.Add(room);
-                    }
+                    TryApplyLockdownToRoom(room, lockdownDuration, isHeavy, isLight, isEntrance, isSurface, isOther);
                 }
             }
 
         }
 
-        private bool ApplyLockdownToRoom(Room room, float lockdownDuration, bool isHeavy, bool isLight, bool isEntrance, bool isSurface, bool isOther, bool isLockdownPerRoom)
+        private bool TryApplyLockdownToRoom(Room room, float lockdownDuration, bool isHeavy, bool isLight, bool isEntrance, bool isSurface, bool isOther)
         {
             string cassieMessage = string.Empty;
             bool shouldLockdown = false;
@@ -309,6 +309,7 @@
                     }
                 }
             }
+            changedRooms.Add(room);
         }
 
         private bool IsTriggered(float chance)
@@ -318,7 +319,7 @@
 
         private void SendDoorRestartSystemCassieMessage(string cassieMessage, bool isGlitchy = false)
         {
-            if (!(cassieMessage.Length > 0)) return;
+            if (string.IsNullOrEmpty(cassieMessage)) return;
             if (isGlitchy)
             {
                 Cassie.GlitchyMessage(cassieMessage, _plugin.Config.GlitchChance / 100f, _plugin.Config.JamChance / 100f);

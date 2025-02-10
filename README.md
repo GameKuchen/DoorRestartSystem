@@ -1,9 +1,9 @@
-## Door-Restart-System 6.3.3
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/gamekuchen/DoorRestartSystem/v6.3.3/total?style=for-the-badge)
+## Door-Restart-System 6.4.0
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/gamekuchen/DoorRestartSystem/v6.4.0/total?style=for-the-badge)
 
 ## Plugin Description: DoorRestartSystem
 
-**Compatible with:** SCP: SL Exiled 9.0+
+**Compatible with:** SCP: SL Exiled 9.5+
 
 The **DoorRestartSystem** plugin introduces an immersive feature where the facility undergoes a "Door Software Restart." During this event, all affected doors are fully closed and locked for a configurable duration, simulating a temporary system-wide malfunction. Once the restart process is complete, doors unlock and return to normal operation.
 

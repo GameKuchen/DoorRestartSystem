@@ -35,13 +35,11 @@ Rumor has it that these malfunctions might be the result of someone spilling the
     
     -   Debugging options to monitor and test the system during development or server setup.
 
-### Contributions
+### Contributors
 
 <a href="https://github.com/iomatix/-SCPSL-DoorRestartSystem/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=iomatix/-SCPSL-DoorRestartSystem" />
 </a>
-
-Made with [contrib.rocks](https://contrib.rocks).
 
 ## Configs:
 ```
